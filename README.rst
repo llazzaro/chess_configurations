@@ -25,18 +25,12 @@ Finds all unique configurations of a set of normal chess pieces on a chess boa
 * Documentation: https://chess-configurations.readthedocs.io.
 
 
-Features
---------
-
-* TODO
-
-
 Recommended Installations steps
 --------
 
 pip install virtualenvwrapper
 mkvirtualenv chess_configuration
-python setup.py install
+pip install git+https://github.com/llazzaro/chess_configurations.git
 
 After all installation is done in the virtualenv a new command will be available to generate configurations.
 
@@ -52,6 +46,14 @@ More arguments
 configurations command also supports the following arguments:
 
 * --output : which will save the configuration to the specified file.
+
+Ideas
+--------
+
+* 30/08/2016: First idea is to use a backtracking algo using cuts
+              to make the code more legible I will use some objects for pieces and for the table.
+              A python package to easily handling deps and code installation
+*
 
 
 Credits
