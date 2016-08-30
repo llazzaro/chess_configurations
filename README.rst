@@ -30,6 +30,30 @@ Features
 
 * TODO
 
+
+Recommended Installations steps
+--------
+
+pip install virtualenvwrapper
+mkvirtualenv chess_configuration
+python setup.py install
+
+After all installation is done in the virtualenv a new command will be available to generate configurations.
+
+How to use
+--------
+
+workon chess_configuration
+configurations -m 7 -n 7 --pieces_types=K,Q,B,R
+
+More arguments
+--------
+
+configurations command also supports the following arguments:
+
+* --output : which will save the configuration to the specified file.
+
+
 Credits
 ---------
 
