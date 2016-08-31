@@ -13,7 +13,6 @@ import pytest
 from contextlib import contextmanager
 from click.testing import CliRunner
 
-from chess_configurations import chess_configurations
 from chess_configurations import cli
 
 

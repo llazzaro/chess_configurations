@@ -40,6 +40,11 @@ How to use
 workon chess_configuration
 configurations -m 7 -n 7 --pieces_types=K,Q,B,R
 
+Unit test execution
+--------
+
+python setup.py test
+
 More arguments
 --------
 
