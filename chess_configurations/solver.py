@@ -1,16 +1,30 @@
 # -*- coding: utf-8 -*-
+from copy import copy
 
 
 def backtracking(board, pieces, i, j):
-    if not board.valid:
-        return
-    if current_i == board.n + 1 and current_j == board.m + 1:
-        # we arrived to the end of the board. print current solution
-        yield board
+    """
+        TODO: complete this doc string
+    """
+    import pdb
+    pdb.set_trace()
+    for current_i in range(0, board.n):
+        for current_j in range(0, board.m):
+            print('Current position {0} {1}'.format(current_i, current_j))
+            if board.free(current_i, current_j):
+                new_board = copy(board)
+                for piece in pieces:
+                    will_take_another_piece = False
+                    for position_to_take in piece.positions_used_from(board, current_i, current_j):
+                        if not new_board.free(position_to_take[0], position_to_take[1]):
+                            # adding the new piece will take another piece already in the board!.
+                            will_take_another_piece = True
+                            break
+                    if not will_take_another_piece:
+                        new_board.put(piece, current_i, current_j)
+                        yield from backtracking(new_board, pieces[1:], current_i, current_j)
+                        new_board.clean(current_i, current_j)
 
-    for current_i in range(i, board.n):
-        for current_j in range(j, board.m):
-            for piece in pieces:
-                board.put(piece, current_i, current_j)
-                backtrack(board, pieces, current_i + 1, current_j)
-                board.clean(current_i, current_j)
+    if board.complete(pieces):
+        # to be a valid solution the board must have all the pieces
+        yield board

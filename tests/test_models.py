@@ -7,33 +7,53 @@ test_chess_configurations
 
 Tests for `chess_configurations` module.
 """
-
-import pytest
-
-from contextlib import contextmanager
-from click.testing import CliRunner
-
-from chess_configurations import cli
+from chess_configurations.models import Board, King, Rook
 
 
-class TestChess_configurations(object):
+class TestPieces(object):
 
-    @classmethod
-    def setup_class(cls):
-        pass
+    def test_king_occupy_function_happy_cases(self):
+        """
+            The King can move anywhere but only by one step.
+            This test asserts that the function returns True for all valid cases
+        """
 
-    def test_something(self):
-        pass
-    def test_command_line_interface(self):
-        runner = CliRunner()
-        result = runner.invoke(cli.main)
-        assert result.exit_code == 0
-        assert 'chess_configurations.cli.main' in result.output
-        help_result = runner.invoke(cli.main, ['--help'])
-        assert help_result.exit_code == 0
-        assert '--help  Show this message and exit.' in help_result.output
+        king_piece = King()
+        small_board = Board(3, 3)
+        small_board.put(king_piece, 1, 1)
+        assert king_piece.occupy_function(small_board, 0, 0)
+        assert king_piece.occupy_function(small_board, 0, 1)
+        assert king_piece.occupy_function(small_board, 0, 2)
+        assert king_piece.occupy_function(small_board, 1, 0)
+        assert king_piece.occupy_function(small_board, 1, 1)
+        assert king_piece.occupy_function(small_board, 1, 2)
+        assert king_piece.occupy_function(small_board, 2, 0)
+        assert king_piece.occupy_function(small_board, 2, 0)
+        assert king_piece.occupy_function(small_board, 2, 1)
+        assert king_piece.occupy_function(small_board, 2, 2)
 
-    @classmethod
-    def teardown_class(cls):
-        pass
+    def test_king_cant_move_more_than_one_step(self):
+        king_piece = King()
+        small_board = Board(3, 3)
+        small_board.put(king_piece, 0, 0)
+        assert king_piece.occupy_function(small_board, 2, 2) is False
+        assert king_piece.occupy_function(small_board, 0, 2) is False
 
+    def test_rook_valid_moves(self):
+        rook_piece = Rook()
+        small_board = Board(3, 3)
+        small_board.put(rook_piece, 0, 0)
+        assert rook_piece.occupy_function(small_board, 0, 0)
+        assert rook_piece.occupy_function(small_board, 0, 1)
+        assert rook_piece.occupy_function(small_board, 0, 2)
+        assert rook_piece.occupy_function(small_board, 1, 0)
+        assert rook_piece.occupy_function(small_board, 2, 0)
+
+    def test_rook_cant_move_can_move_in_diagonal_direction(self):
+        rook_piece = Rook()
+        small_board = Board(3, 3)
+        small_board.put(rook_piece, 0, 0)
+        assert rook_piece.occupy_function(small_board, 1, 1) is False
+        assert rook_piece.occupy_function(small_board, 2, 2) is False
+        # just in case
+        assert rook_piece.occupy_function(small_board, 1, 2) is False

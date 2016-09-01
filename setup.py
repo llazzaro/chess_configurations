@@ -15,6 +15,7 @@ requirements = [
 
 test_requirements = [
     'pytest',
+    'pdbpp',
 ]
 
 setup(
@@ -27,6 +28,8 @@ setup(
     url='https://github.com/llazzaro/chess_configurations',
     packages=[
         'chess_configurations',
+    ],
+    dependency_links=[
     ],
     package_dir={'chess_configurations':
                  'chess_configurations'},
