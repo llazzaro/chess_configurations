@@ -12,6 +12,15 @@ from chess_configurations.models import Board, King, Rook
 
 class TestPieces(object):
 
+    def test_positions_used_from_for_king_in_the_upper_corner_are_valid(self):
+        king_piece = King()
+        small_board = Board(3, 3)
+        assert (0, 0) in king_piece.positions_to_take(small_board, 0, 0)
+        assert (1, 0) in king_piece.positions_to_take(small_board, 0, 0)
+        assert (1, 1) in king_piece.positions_to_take(small_board, 0, 0)
+        assert (0, 1) in king_piece.positions_to_take(small_board, 0, 0)
+        assert (0, 2) not in king_piece.positions_to_take(small_board, 0, 0)
+
     def test_king_occupy_function_happy_cases(self):
         """
             The King can move anywhere but only by one step.

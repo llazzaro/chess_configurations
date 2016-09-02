@@ -37,6 +37,9 @@ class Board:
     def complete(self, pieces):
         return set(pieces) == set(self.pieces.values()) and len(pieces) == len(self.pieces.values())
 
+    def pieces_positions(self):
+        return (position for position in self.pieces.keys())
+
 
 class Piece:
 
@@ -52,7 +55,7 @@ class Piece:
 
 class King(Piece):
 
-    def positions_used_from(self, board, i, j):
+    def positions_to_take(self, board, i, j):
         """
             This method is used when a new piece is put in the board.
             Since the new piece could take the ones already in the board we
@@ -60,7 +63,7 @@ class King(Piece):
             Positions returned are from i, j
         """
         return [
-                (i - 1, j), (i -1, j - 1), (i, j - 1),
+                (i - 1, j), (i - 1, j - 1), (i, j - 1),
                 (i, j),
                 (i + 1, j), (i + 1, j + 1), (i, j + 1)]
 
@@ -83,7 +86,7 @@ class King(Piece):
 
 class Rook(Piece):
 
-    def positions_used_from(self, board, i, j):
+    def positions_to_take(self, board, i, j):
         for take_i in range(0, board.n):
             yield (take_i, j)
 
