@@ -1,28 +1,27 @@
 # -*- coding: utf-8 -*-
-from copy import copy
+from collections import defaultdict
 
 
-def backtracking(board, original_pieces, pieces, i, j):
-    """
-        TODO: complete this doc string
-    """
+
+def backtracking(board, original_pieces, pieces, i, j, result):
     for current_i in range(0, board.n):
         for current_j in range(0, board.m):
             if not pieces:
-                # cut to avoid iterate over all range
                 break
-            print('Current position {0} {1}'.format(current_i, current_j))
             if board.free(current_i, current_j):
-                new_board = copy(board)
                 for piece in pieces:
-                    pieces_positions = set(new_board.pieces_positions())
+                    pieces_positions = set(board.pieces_positions())
                     positions_to_take = piece.positions_to_take(board, current_i, current_j)
                     current_pieces_intersect_to_take = pieces_positions.intersection(positions_to_take)
+                    # TODO: add cut with the number of free places
                     if not current_pieces_intersect_to_take:
-                        new_board.put(piece, current_i, current_j)
-                        yield from backtracking(new_board, original_pieces, pieces[1:], current_i, current_j)
-                        new_board.clean(current_i, current_j)
+                        board.put(piece, current_i, current_j)
+                        next_pieces = pieces.copy()
+                        next_pieces.remove(piece)
+                        yield from backtracking(board, original_pieces, next_pieces, current_i, current_j, result)
+                        # now we have to remove the same type of piece to avoid duplicate results
+                        board.clean(current_i, current_j)
 
-    if board.complete(original_pieces):
-        # to be a valid solution the board must have all the pieces
-        yield board
+    if board.complete(original_pieces) and board not in result:
+        result.add(board)
+        yield board.copy()

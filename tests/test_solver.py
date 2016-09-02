@@ -23,7 +23,7 @@ class TestSolverWithBoardCases(object):
         board = Board(1, 1)
         pieces = []
         res = []
-        for board in backtracking(board, pieces, pieces, 0, 0):
+        for board in backtracking(board, pieces, pieces, 0, 0, set()):
             print(board.pieces)
             res.append(board)
 
@@ -41,8 +41,26 @@ class TestSolverWithBoardCases(object):
         pieces = [King(), King(), Rook()]
         board = Board(3, 3)
         res = []
-        import ipdb
-        for board in backtracking(board, pieces.copy(), pieces, 0, 0):
+        for board in backtracking(board, pieces.copy(), pieces, 0, 0, set()):
             res.append(board)
-#         assert len(res) == 4
-        ipdb.set_trace()
+        assert len(res) == 4
+
+        board_0 = res[0]
+        assert board_0.pieces[(0, 0)].piece_identification == 'K'
+        assert board_0.pieces[(0, 2)].piece_identification == 'K'
+        assert board_0.pieces[(2, 1)].piece_identification == 'R'
+
+        board_1 = res[1]
+        assert board_1.pieces[(0, 0)].piece_identification == 'K'
+        assert board_1.pieces[(2, 0)].piece_identification == 'K'
+        assert board_1.pieces[(2, 1)].piece_identification == 'R'
+
+        board_2 = res[2]
+        assert board_2.pieces[(0, 0)].piece_identification == 'K'
+        assert board_2.pieces[(0, 2)].piece_identification == 'K'
+        assert board_2.pieces[(2, 1)].piece_identification == 'R'
+
+        board_3 = res[3]
+        assert board_3.pieces[(0, 0)].piece_identification == 'K'
+        assert board_3.pieces[(0, 2)].piece_identification == 'K'
+        assert board_3.pieces[(2, 1)].piece_identification == 'R'
