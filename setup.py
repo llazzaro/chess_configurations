@@ -19,6 +19,7 @@ test_requirements = [
     'pytest',
     'pdbpp',
     'pytest-cov',
+    'mock',
 ]
 
 setup(

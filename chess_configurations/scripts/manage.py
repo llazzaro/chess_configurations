@@ -17,9 +17,9 @@ def parse_args():
     # Create the arguments
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('-n', help='The value N of the board nxm')
-    parser.add_argument('-m', help='The value M of the board nxm')
-    parser.add_argument('-p', '--pieces', help='List of pieces to be used. Valid optiosn are: K,Q,B,N,R')
+    parser.add_argument('-n', help='The value N of the board nxm', required=True)
+    parser.add_argument('-m', help='The value M of the board nxm', required=True)
+    parser.add_argument('-p', '--pieces', help='List of pieces to be used. Valid optiosn are: K,Q,B,N,R', required=True)
     parser.add_argument('-o', '--output', help='Output filename')
     parser.add_argument('-f', '--output_format', help='Output format. valid options are: text, json')
 
@@ -35,11 +35,11 @@ def main():
 
     for board in backtracking(board, pieces.copy(), pieces, 0, 0, set()):
         if args.output:
-            with open(args.output, 'w') as output_file:
+            with open(args.output, 'a') as output_file:
                 if args.output_format == 'json':
-                    output_file.write(board.to_json())
+                    output_file.write(board.to_json() + '\n')
                 if args.output_format == 'text':
-                    output_file.write(draw_board(board))
+                    output_file.write(draw_board(board) + '\n')
         else:
             print(draw_board(board))
 
