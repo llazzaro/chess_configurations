@@ -17,5 +17,5 @@ def draw_board(board):
 
     res += '└'
     res += '─' * board.m * 2
-    res += '┘'
+    res += '┘\n\n'
     return res

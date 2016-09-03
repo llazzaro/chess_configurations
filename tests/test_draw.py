@@ -19,7 +19,7 @@ class TestDraw:
         expected += "│_ _ _ │\n"
         expected += "│_ _ _ │\n"
         expected += "│_ _ _ │\n"
-        expected += "└──────┘"
+        expected += "└──────┘\n\n"
         board = Board(3, 3)
         res = draw_board(board)
         assert res == expected
@@ -29,7 +29,7 @@ class TestDraw:
         expected += "│K _ _ │\n"
         expected += "│_ _ _ │\n"
         expected += "│_ _ _ │\n"
-        expected += "└──────┘"
+        expected += "└──────┘\n\n"
         board = Board(3, 3)
         king = King()
         board.put(king, 0, 0)
@@ -41,7 +41,7 @@ class TestDraw:
         expected += "│_ _ _ │\n"
         expected += "│_ _ _ │\n"
         expected += "│_ _ K │\n"
-        expected += "└──────┘"
+        expected += "└──────┘\n\n"
         board = Board(3, 3)
         king = King()
         board.put(king, 2, 2)
@@ -53,7 +53,7 @@ class TestDraw:
         expected += "│K _ K │\n"
         expected += "│_ _ _ │\n"
         expected += "│_ R _ │\n"
-        expected += "└──────┘"
+        expected += "└──────┘\n\n"
         board = Board(3, 3)
         king = King()
         rook = Rook()
