@@ -37,7 +37,7 @@ setup(
                  'chess_configurations'},
     entry_points={
         'console_scripts': [
-            'chess_configurations=chess_configurations.cli:main'
+            'manage = chess_configurations.scripts.manage:main'
         ]
     },
     include_package_data=True,
