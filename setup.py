@@ -11,11 +11,13 @@ with open('HISTORY.rst') as history_file:
 
 requirements = [
     'Click>=6.0',
+    'pytest-runner',
 ]
 
 test_requirements = [
     'pytest',
     'pdbpp',
+    'pytest-cov',
 ]
 
 setup(
@@ -57,5 +59,5 @@ setup(
         'Programming Language :: Python :: 3.5',
     ],
     test_suite='tests',
-    tests_require=test_requirements
+    tests_require=test_requirements,
 )
