@@ -11,7 +11,7 @@ def draw_board(board):
             if (i, j) in board.pieces:
                 res += '{0} '.format(board.pieces[(i, j)])
             else:
-                res += '  '
+                res += '_ '
         res += '│'
         res +='\n'
 
