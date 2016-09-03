@@ -2,7 +2,6 @@
 from collections import defaultdict
 
 
-
 def backtracking(board, original_pieces, pieces, i, j, result):
     for current_i in range(0, board.n):
         for current_j in range(0, board.m):
@@ -10,11 +9,12 @@ def backtracking(board, original_pieces, pieces, i, j, result):
                 break
             if board.free(current_i, current_j):
                 for piece in pieces:
-                    pieces_positions = set(board.pieces_positions())
-                    positions_to_take = piece.positions_to_take(board, current_i, current_j)
-                    current_pieces_intersect_to_take = pieces_positions.intersection(positions_to_take)
+                    new_piece_will_take_other = False
+                    for piece_position_in_board in set(board.pieces_positions()):
+                        if piece.occupy_function(board, current_i, current_j, piece_position_in_board[0], piece_position_in_board[1]):
+                            new_piece_will_take_other = True
                     # TODO: add cut with the number of free places
-                    if not current_pieces_intersect_to_take:
+                    if not new_piece_will_take_other:
                         board.put(piece, current_i, current_j)
                         next_pieces = pieces.copy()
                         next_pieces.remove(piece)

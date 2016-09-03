@@ -1,12 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-test_chess_configurations
-----------------------------------
-
-Tests for `chess_configurations` module.
-"""
 from pytest import raises
 
 from chess_configurations.models import Board, King, Rook, Knight

@@ -164,18 +164,6 @@ class King(Piece):
         """ See Piece class method doc string"""
         return 'K'
 
-    def positions_to_take(self, board, i, j):
-        """
-            This method is used when a new piece is put in the board.
-            Since the new piece could take the ones already in the board we
-            need if the piece could take the ones in the board
-            Positions returned are from i, j
-        """
-        return [
-                (i - 1, j), (i - 1, j - 1), (i, j - 1),
-                (i, j), (i - 1, j + 1), (i + 1, j - 1),
-                (i + 1, j), (i + 1, j + 1), (i, j + 1)]
-
     @property
     def occupy_function(self):
         def move_anywhere_by_one_place(board, piece_position_i, piece_position_j, move_to_i, move_to_j):
@@ -192,13 +180,6 @@ class Rook(Piece):
     @property
     def piece_identification(self):
         return 'R'
-
-    def positions_to_take(self, board, i, j):
-        for take_i in range(0, board.n):
-            yield (take_i, j)
-
-        for take_j in range(0, board.m):
-            yield (i, take_j)
 
     @property
     def occupy_function(self):
@@ -218,28 +199,6 @@ class Knight(Piece):
     @property
     def piece_identification(self):
         return 'N'
-
-    def positions_to_take(self, board, i, j):
-
-        position_1 = (i - 2, j - 1)
-        position_2 = (i - 1, j - 2)
-        position_3 = (i + 1, j - 2)
-        position_4 = (i + 2, j - 1)
-        position_5 = (i - 2, j + 1)
-        position_6 = (i - 1, j + 2)
-        position_7 = (i + 1, j + 2)
-        position_8 = (i + 2, j + 1)
-        return [
-            position_1,
-            position_2,
-            position_3,
-            position_4,
-            position_5,
-            position_6,
-            position_7,
-            position_8,
-            (i, j),
-        ]
 
     @property
     def occupy_function(self):
@@ -264,13 +223,6 @@ class Bishop(Piece):
     def piece_identification(self):
         return 'B'
 
-    def positions_to_take(self, board, i, j):
-        for combination in range(0, max(board.n, board.m)):
-            yield (i + combination + 1, j + combination + 1)
-            yield (i + combination - 1, j + combination + 1)
-            yield (i + combination - 1, j + combination - 1)
-            yield (i + combination + 1, j + combination - 1)
-
     @property
     def occupy_function(self):
         def move_vertically_or_horizontally(board, piece_position_i, piece_position_j, move_to_i, move_to_j):
@@ -292,9 +244,11 @@ class Queen(Rook, Bishop):
     def piece_identification(self):
         return 'Q'
 
-    def positions_to_take(self, board, i, j):
-        pass
-
     @property
     def occupy_function(self):
-        pass
+        def move_like_a_queen(board, piece_position_i, poiece_position_j, move_to_i, move_to_j):
+            valid_movement_like_bishop = Bishop().occupy_function(board, piece_position_i, poiece_position_j, move_to_i, move_to_j)
+            valid_movement_like_rook = Rook().occupy_function(board, piece_position_i, poiece_position_j, move_to_i, move_to_j)
+            return valid_movement_like_bishop or valid_movement_like_rook
+
+        return move_like_a_queen

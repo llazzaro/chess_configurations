@@ -4,10 +4,50 @@ import json
 
 from pytest import raises
 
-from chess_configurations.models import Board, King, Rook, Knight
+from chess_configurations.models import (
+    Board,
+    Piece,
+    King,
+    Rook,
+    Knight,
+    Bishop,
+    Queen
+)
+
+
+def verify_piece_movement(piece, board, valid_positions, current_pos_i, current_pos_j):
+    for i in range(0, board.n):
+        for j in range(0, board.m):
+            if (i, j) in valid_positions:
+                assert piece.occupy_function(board, current_pos_i, current_pos_j, i, j) is True
+            else:
+                assert piece.occupy_function(board, current_pos_i, current_pos_j, i, j) is False
 
 
 class TestBoard:
+
+    def test_equal_on_different_board(self):
+        king = King()
+        board = Board(3, 3)
+        board.put(king, 0, 0)
+
+        another_board = Board(3, 3)
+        another_board.put(king, 2, 2)
+
+        assert another_board != board
+        assert hash(another_board) != hash(board)
+
+    def test_equals_on_different_board_different_piece_in_same_position(self):
+        king = King()
+        bishop = Bishop()
+        board = Board(3, 3)
+        board.put(king, 0, 0)
+
+        another_board = Board(3, 3)
+        another_board.put(bishop, 0, 0)
+
+        assert another_board != board
+        assert hash(another_board) != hash(board)
 
     def test_equal_with_the_same_pieces_at_same_positions(self):
         king = King()
@@ -121,15 +161,13 @@ class TestBoard:
         res = Board.from_json('{"m": 4, "pieces": {"(2, 2)": "R", "(1, 1)": "K"}, "n": 3}')
         assert res == expected_board
 
+class TestPiece:
+
+    def test_equals_against_other_object(self):
+        piece = Piece()
+        assert piece != 1
 
 class TestKing:
-
-    def test_of_a_bug_it_was_possible_to_put_a_king_that_takes_a_rook(self):
-        king = King()
-        board = Board(3, 3)
-        board.put(king, 0, 0)
-        positions_to_take = king.positions_to_take(board, 0, 0)
-        assert (0, 1) in positions_to_take
 
     def test_pieces_of_the_same_type_are_indistingueable(self):
         king = King()
@@ -140,15 +178,6 @@ class TestKing:
         king = King()
         rook = Rook()
         assert king != rook
-
-    def test_positions_used_from_for_king_in_the_upper_corner_are_valid(self):
-        king_piece = King()
-        small_board = Board(3, 3)
-        assert (0, 0) in king_piece.positions_to_take(small_board, 0, 0)
-        assert (1, 0) in king_piece.positions_to_take(small_board, 0, 0)
-        assert (1, 1) in king_piece.positions_to_take(small_board, 0, 0)
-        assert (0, 1) in king_piece.positions_to_take(small_board, 0, 0)
-        assert (0, 2) not in king_piece.positions_to_take(small_board, 0, 0)
 
     def test_king_occupy_function_happy_cases(self):
         """
@@ -177,6 +206,10 @@ class TestKing:
         assert king_piece.occupy_function(small_board, 0, 0, 2, 2) is False
         assert king_piece.occupy_function(small_board, 0, 0, 0, 2) is False
 
+    def test_king_identification_is_K(self):
+        piece = King()
+        assert piece.piece_identification == 'K'
+
 
 class TestRook:
 
@@ -199,6 +232,9 @@ class TestRook:
         # just in case
         assert rook_piece.occupy_function(small_board, 0, 0, 1, 2) is False
 
+    def test_rook_identification_is_R(self):
+        piece = Rook()
+        assert piece.piece_identification == 'R'
 
 class TestKnight:
 
@@ -217,38 +253,46 @@ class TestKnight:
             (3, 4),
             (4, 3),
         ]
-        for i in range(0, 5):
-            for j in range(0, 5):
-                if (i, j) in valid_positions:
-                    assert knight.occupy_function(small_board, 2, 2, i, j) is True
-                else:
-                    assert knight.occupy_function(small_board, 2, 2, i, j) is False
+        verify_piece_movement(knight, small_board, valid_positions, 2, 2)
 
-    def test_taken_position_generator(self):
-        knight = Knight()
-        small_board = Board(5, 5)
-        small_board.put(knight, 2, 2)
-        valid_positions = [
-            (0, 1),
-            (1, 0),
-            (0, 3),
-            (2, 2),
-            (1, 4),
-            (3, 0),
-            (4, 1),
-            (3, 4),
-            (4, 3),
-        ]
-        assert set(list(knight.positions_to_take(small_board, 2, 2))) == set(valid_positions)
-
+    def test_knight_identification_is_N(self):
+        piece = Knight()
+        assert piece.piece_identification == 'N'
 
 class TestBishop:
 
-    def test_(self):
-        pass
+    def test_occupy_functions_diagonal(self):
+        bishop = Bishop()
+        small_board = Board(3, 3)
+        small_board.put(bishop, 0, 0)
+        valid_positions = [
+            (0, 0),
+            (1, 1),
+            (2, 2),
+        ]
+        verify_piece_movement(bishop, small_board, valid_positions, 0, 0)
 
+    def test_bishop_identification_is_B(self):
+        piece = Bishop()
+        assert piece.piece_identification == 'B'
 
 class TestQueen:
 
-    def test_(self):
-        pass
+    def test_queen_identification_is_Q(self):
+        queen = Queen()
+        assert queen.piece_identification == 'Q'
+
+    def test_occupy_function_in_diagonal_vertical_and_horizontal(self):
+        queen = Queen()
+        small_board = Board(3, 3)
+        small_board.put(queen, 0, 0)
+        valid_positions = [
+            (0, 0),
+            (1, 1),
+            (2, 2),
+            (0, 1),
+            (0, 2),
+            (1, 0),
+            (2, 0),
+        ]
+        verify_piece_movement(queen, small_board, valid_positions, 0, 0)
