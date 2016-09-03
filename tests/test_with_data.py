@@ -19,9 +19,9 @@ from chess_configurations.models import (
 TEST_DATA_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
 
 
-class Test(object):
+class TestSavedExecutions(object):
 
-    def test_(self):
+    def test_with_past_execution_information(self):
         mapping = {'K': King, 'Q': Queen, 'R': Rook, 'B': Bishop, 'N': Knight}
         for parameter_filename in iglob(os.path.join(TEST_DATA_PATH, 'params_*')):
             case_nro = parameter_filename.split('/')[-1].split('_')[1]
