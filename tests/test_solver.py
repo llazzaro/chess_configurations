@@ -1,12 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-"""
-test_chess_configurations
-----------------------------------
-
-Tests for `chess_configurations` module.
-"""
 import pytest
 
 from chess_configurations.solver import backtracking
@@ -39,7 +33,10 @@ class TestSolverWithBoardCases(object):
     #@pytest.mark.benchmark()  # warmup=True, warmup_iterations=10 ** 8, max_time=10)
     def test_example_test_case_given(self):
         """
-            This test case was given as an example
+            This test case was given as an example.
+            The assert were done manually before the to_json method was done.
+            To make checks easily see: test_with_data which uses a "fuzzer"
+            case generator to verify results.
         """
         pieces = [King(), King(), Rook()]
         board = Board(3, 3)

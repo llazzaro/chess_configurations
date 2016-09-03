@@ -45,6 +45,17 @@ Unit test execution
 
 python setup.py test
 
+Test case generator
+--------
+When the algorithm reached a point that requried optimization I buildt a script to save inputs and outputs.
+With those file I will execute unit test to check if the solution is ok.
+
+To execute the case generator
+pythont test/case_generator.py
+
+This script will generate random cases and save all the files in the tests/data directory.
+Use with carefull, if the algorithm has a bug all test cases will be invalid!
+
 More arguments
 --------
 
