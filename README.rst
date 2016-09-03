@@ -18,12 +18,10 @@ chess_configurations
      :alt: Updates
 
 
-Finds all unique configurations of a set of normal chess pieces on a chess boa
+Finds all unique configurations of a set of normal chess pieces on a chess board
 
 
 * Free software: MIT license
-* Documentation: https://chess-configurations.readthedocs.io.
-
 
 Recommended Installations steps
 --------
