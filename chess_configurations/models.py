@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 
 
 class Board:
@@ -27,6 +28,27 @@ class Board:
         pieces = ''.join(sorted(map(lambda piece: piece.piece_identification, self.pieces.values())))
 
         return hash((dimension, positions, pieces))
+
+    @classmethod
+    def from_json(self, data):
+        mapping = {'K': King, 'Q': Queen, 'R': Rook, 'B': Bishop, 'N': Knight}
+        raw_dict = json.loads(data)
+        res = Board(raw_dict['n'], raw_dict['m'])
+        for position, piece_type in raw_dict['pieces'].items():
+            i, j = position.strip(')').strip('(').split(',')
+            res.put(mapping[piece_type](), int(i), int(j))
+
+        return res
+
+    def to_json(self):
+        pieces_dict = {}
+        for position, piece in self.pieces.items():
+            pieces_dict[str(position)] = piece.piece_identification
+        return json.dumps({
+            'n': self.n,
+            'm': self.m,
+            'pieces': pieces_dict
+        })
 
     def put(self, piece, i, j):
         """ Puts a piece on the board at position i,j

@@ -1,12 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import json
 
-"""
-test_chess_configurations
-----------------------------------
-
-Tests for `chess_configurations` module.
-"""
 from pytest import raises
 
 from chess_configurations.models import Board, King, Rook, Knight
@@ -106,6 +101,25 @@ class TestBoard:
         board.put(king, 1, 1)
 
         assert [position for position in board.pieces_positions()] == [(1, 1)]
+
+    def test_to_json_with_a_board_with_two_pieces(self):
+        king = King()
+        rook = Rook()
+        board = Board(3, 4)
+        board.put(king, 1, 1)
+        board.put(rook, 2, 2)
+        res = json.loads(board.to_json())
+        expected = json.loads('{"m": 4, "pieces": {"(2, 2)": "R", "(1, 1)": "K"}, "n": 3}')
+        assert res == expected
+
+    def test_from_json_with_a_board_with_two_pieces(self):
+        king = King()
+        rook = Rook()
+        expected_board = Board(3, 4)
+        expected_board.put(king, 1, 1)
+        expected_board.put(rook, 2, 2)
+        res = Board.from_json('{"m": 4, "pieces": {"(2, 2)": "R", "(1, 1)": "K"}, "n": 3}')
+        assert res == expected_board
 
 
 class TestKing:
