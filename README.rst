@@ -29,7 +29,9 @@ Recommended Installations steps
 --------
 
 pip install virtualenvwrapper
+
 mkvirtualenv chess_configuration
+
 pip install git+https://github.com/llazzaro/chess_configurations.git
 
 After all installation done, a new command will be available to generate chess configurations.
@@ -38,6 +40,7 @@ How to use
 --------
 
 workon chess_configuration
+
 configurations -m 7 -n 7 --pieces=K,Q,B,R
 
 Unit test execution
@@ -51,6 +54,7 @@ When the algorithm reached a point that requried optimization I buildt a script 
 With those file I will execute unit test to check if the solution is ok.
 
 To execute the case generator
+
 pythont test/case_generator.py
 
 This script will generate random cases and save all the files in the tests/data directory.
@@ -72,7 +76,8 @@ Ideas
               A python package to easily handling deps and code installation
 * 03/09/2016: Working code with 85% coverage. added pytest benchmark to start performance tunning.
               Ideas: more cuts on the backtracking. remove a slow function in the Piece objects
-
+* 03/09/2016: After all unit test done. The idea is to optimize the O(n^2) inside the backtracking.
+              I will add a list of available places
 
 Credits
 ---------
