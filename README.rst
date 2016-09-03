@@ -77,6 +77,11 @@ Ideas
 * 03/09/2016: After all unit test done. The idea is to optimize the O(n^2) inside the backtracking.
               I will add a list of available places
 
+TODO
+---------
+
+* piece type optimization: For example we can optimize the queen like it is usually done with the N-queens problems.
+
 Credits
 ---------
 
