@@ -30,8 +30,8 @@ class TestSolverWithBoardCases(object):
         """
         pass
 
-    #@pytest.mark.benchmark()  # warmup=True, warmup_iterations=10 ** 8, max_time=10)
-    def test_example_test_case_given(self):
+    @pytest.mark.benchmark(warmup=True, warmup_iterations=10 ** 8, max_time=10)
+    def test_example_test_case_given(self, benchmark):
         """
             This test case was given as an example.
             The assert were done manually before the to_json method was done.
@@ -41,7 +41,7 @@ class TestSolverWithBoardCases(object):
         pieces = [King(), King(), Rook()]
         board = Board(3, 3)
         res = []
-        for board in backtracking(board, pieces.copy(), pieces, 0, 0, set()):
+        for board in benchmark(backtracking, board, pieces.copy(), pieces, 0, 0, set()):
             res.append(board)
         assert len(res) == 4
 
