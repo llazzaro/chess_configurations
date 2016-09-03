@@ -32,13 +32,13 @@ pip install virtualenvwrapper
 mkvirtualenv chess_configuration
 pip install git+https://github.com/llazzaro/chess_configurations.git
 
-After all installation is done in the virtualenv a new command will be available to generate configurations.
+After all installation done, a new command will be available to generate chess configurations.
 
 How to use
 --------
 
 workon chess_configuration
-configurations -m 7 -n 7 --pieces_types=K,Q,B,R
+configurations -m 7 -n 7 --pieces=K,Q,B,R
 
 Unit test execution
 --------
@@ -51,6 +51,7 @@ More arguments
 configurations command also supports the following arguments:
 
 * --output : which will save the configuration to the specified file.
+* --output_format : text or json can be used.
 
 Ideas
 --------
@@ -58,7 +59,8 @@ Ideas
 * 30/08/2016: First idea is to use a backtracking algo using cuts
               to make the code more legible I will use some objects for pieces and for the table.
               A python package to easily handling deps and code installation
-*
+* 03/09/2016: Working code with 85% coverage. added pytest benchmark to start performance tunning.
+              Ideas: more cuts on the backtracking. remove a slow function in the Piece objects
 
 
 Credits
