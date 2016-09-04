@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 import sys
 import time
 
@@ -8,29 +9,36 @@ from chess_configurations.draw import draw_board
 
 
 def backtracking(board, original_pieces, pieces, i, j, result, animation=None):
-    for current_i in range(0, board.n):
-        for current_j in range(0, board.m):
-            if not pieces:
-                break
-            if board.free(current_i, current_j):
-                for piece in pieces:
-                    new_piece_will_take_other = False
-                    for piece_position_in_board in set(board.pieces_positions()):
-                        if piece.occupy_function(board, current_i, current_j, piece_position_in_board[0], piece_position_in_board[1]):
-                            new_piece_will_take_other = True
-                    # TODO: add cut with the number of free places
-                    if not new_piece_will_take_other:
-                        board.put(piece, current_i, current_j)
-                        next_pieces = pieces.copy()
-                        next_pieces.remove(piece)
-                        yield from backtracking(board, original_pieces, next_pieces, current_i, current_j, result)
-                        # now we have to remove the same type of piece to avoid duplicate results
-                        board.clean(current_i, current_j)
+    """
+        I'm doing the recursion on the pieces parameter.
+    """
+    for current_i, current_j in board.free_positions():
+        if not pieces:
+            break
+        for piece in pieces:
+            positions_to_take = piece.positions_to_take(board, current_i, current_j)
+            takes_other_piece = any([position in board.piece_positions() for position in positions_to_take])
+            none_takes_new_piece = True
+            for position, board_piece in board.pieces.items():
+                if board_piece.takes(board, position[0], position[1], current_i, current_j):
+                    none_takes_new_piece = False
+                    break
+            if not takes_other_piece and none_takes_new_piece:
+                if current_i > board.n or current_j > board.m:
+                    import ipdb;ipdb.set_trace()
+                board.put(piece, current_i, current_j)
+                next_pieces = pieces.copy()
+                next_pieces.remove(piece)
+                yield from backtracking(board, original_pieces, next_pieces, current_i, current_j, result, animation)
+                # now we have to remove the same type of piece to avoid duplicate results
+                board.clean(current_i, current_j)
 
     if animation:
-        sys.stdout.write(draw_board(board))
-        sys.stdout.flush()
-        time.sleep(1)
+        print(draw_board(board))
+        if board.complete(original_pieces) and board not in result:
+            print('RESULT!')
+        time.sleep(0.05)
+        os.system('clear')
     if board.complete(original_pieces) and board not in result:
         result.add(board)
         yield board.copy()

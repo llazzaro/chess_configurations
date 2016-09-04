@@ -8,6 +8,13 @@ class Board:
         self.n = n
         self.m = m
         self.pieces = {}
+        self.free_places = []
+        self._reset_free_places()
+
+    def _reset_free_places(self):
+        for i in range(0, self.n):
+            for j in range(0, self.m):
+                self.free_places.append((i, j))
 
     def __eq__(self, other):
         equal_dimension = self.n == other.n and self.m == other.m
@@ -60,6 +67,8 @@ class Board:
         assert 0 <= i < self.n
         assert 0 <= j < self.m
         assert (i, j) not in self.pieces
+
+        self.free_places = list(set(self.free_places) - set(piece.positions_to_take(self, i, j)))
         self.pieces[(i, j)] = piece
 
     def copy(self):
@@ -77,25 +86,9 @@ class Board:
             returns None, but changes the board.
         """
         assert (i, j) in self.pieces
+        for new_free_position in self.pieces[(i, j)].positions_to_take(self, i, j):
+            self.free_places.append(new_free_position)
         del self.pieces[(i, j)]
-
-    def free(self, i, j):
-        """
-            Checks if another piece could take the position i,j
-            i -- integer that must be inside the limits of the board
-            j -- integer that must be inside the limits of the board
-            complexity: O(p), where p is the number of pieces on the board.
-                        we require that occupy_function is O(1) always.
-            return True if there is not other piece which could take i
-            raises AssertionError when the i,j is outside the board
-        """
-        assert 0 <= i < self.n
-        assert 0 <= j < self.m
-        res = True
-        for position, piece in self.pieces.items():
-            if piece.occupy_function(self, position[0], position[1], i, j):
-                return False
-        return res
 
     def complete(self, pieces):
         """
@@ -106,17 +99,31 @@ class Board:
         """
         return set(pieces) == set(self.pieces.values()) and len(pieces) == len(self.pieces.values())
 
-    def pieces_positions(self):
+    def piece_positions(self):
         """
             returns a generation of the positions of all the pieces
         """
         return (position for position in self.pieces.keys())
 
+    def free_positions(self):
+        """
+            Returns a list of the free positions on the board
+        """
+        return self.free_places
 
 class Piece:
 
+    def positions_to_take(self, board, i, j):
+        """
+            This method is used when a new piece is put in the board.
+            Since the new piece could take the ones already in the board we
+            need if the piece could take the ones in the board
+            Positions returned are from i, j
+        """
+        raise NotImplementedError('Abstract method called')
+
     @property
-    def occupy_function(self):
+    def takes(self):
         """
             returns a function to be called with current (i,j) position and the new (x,y).
             this function returns True or False to know is the piece can move to there.
@@ -159,13 +166,17 @@ class Piece:
 
 class King(Piece):
 
-    @property
-    def piece_identification(self):
-        """ See Piece class method doc string"""
-        return 'K'
+    def positions_to_take(self, board, i, j):
+        """ See Piece class for more information """
+        all_positions = [
+                (i - 1, j), (i - 1, j - 1), (i, j - 1),
+                (i, j), (i - 1, j + 1), (i + 1, j - 1),
+                (i + 1, j), (i + 1, j + 1), (i, j + 1)]
+
+        return [(i, j) for i, j in all_positions if 0 <= i < board.n and 0 <= j < board.m]
 
     @property
-    def occupy_function(self):
+    def takes(self):
         def move_anywhere_by_one_place(board, piece_position_i, piece_position_j, move_to_i, move_to_j):
             """
                 King can move anywhere by only one step.
@@ -174,15 +185,23 @@ class King(Piece):
 
         return move_anywhere_by_one_place
 
+    @property
+    def piece_identification(self):
+        """ See Piece class method doc string"""
+        return 'K'
+
 
 class Rook(Piece):
 
-    @property
-    def piece_identification(self):
-        return 'R'
+    def positions_to_take(self, board, i, j):
+        for take_i in range(0, board.n):
+            yield (take_i, j)
+
+        for take_j in range(0, board.m):
+            yield (i, take_j)
 
     @property
-    def occupy_function(self):
+    def takes(self):
         def move_vertically_or_horizontally(board, piece_position_i, piece_position_j, move_to_i, move_to_j):
             """
                 Rooks can move vertically or horizontally only
@@ -193,15 +212,36 @@ class Rook(Piece):
 
         return move_vertically_or_horizontally
 
+    @property
+    def piece_identification(self):
+        return 'R'
+
 
 class Knight(Piece):
 
-    @property
-    def piece_identification(self):
-        return 'N'
+    def positions_to_take(self, board, i, j):
+        position_1 = (i - 2, j - 1)
+        position_2 = (i - 1, j - 2)
+        position_3 = (i + 1, j - 2)
+        position_4 = (i + 2, j - 1)
+        position_5 = (i - 2, j + 1)
+        position_6 = (i - 1, j + 2)
+        position_7 = (i + 1, j + 2)
+        position_8 = (i + 2, j + 1)
+        return filter(lambda pos: 0 <= pos[0] < board.n and 0 <= pos[1] < board.m,[
+            position_1,
+            position_2,
+            position_3,
+            position_4,
+            position_5,
+            position_6,
+            position_7,
+            position_8,
+            (i, j),
+        ])
 
     @property
-    def occupy_function(self):
+    def takes(self):
         def move_with_as_knight(board, piece_position_i, piece_position_j, move_to_i, move_to_j):
             """
             """
@@ -212,6 +252,10 @@ class Knight(Piece):
 
         return move_with_as_knight
 
+    @property
+    def piece_identification(self):
+        return 'N'
+
 
 class Bishop(Piece):
     """
@@ -219,12 +263,15 @@ class Bishop(Piece):
         the multiple inheritance was not done for code reusage.
     """
 
-    @property
-    def piece_identification(self):
-        return 'B'
+    def positions_to_take(self, board, i, j):
+        for combination in range(0, max(board.n, board.m)):
+            yield (i + combination + 1, j + combination + 1)
+            yield (i + combination - 1, j + combination + 1)
+            yield (i + combination - 1, j + combination - 1)
+            yield (i + combination + 1, j + combination - 1)
 
     @property
-    def occupy_function(self):
+    def takes(self):
         def move_vertically_or_horizontally(board, piece_position_i, piece_position_j, move_to_i, move_to_j):
             """
                 Rooks can move vertically or horizontally only
@@ -233,6 +280,10 @@ class Bishop(Piece):
 
         return move_vertically_or_horizontally
 
+    @property
+    def piece_identification(self):
+        return 'B'
+
 
 class Queen(Rook, Bishop):
     """
@@ -240,15 +291,19 @@ class Queen(Rook, Bishop):
         the multiple inheritance was not done for code reusage.
     """
 
-    @property
-    def piece_identification(self):
-        return 'Q'
+    def positions_to_take(self, board, i, j):
+        yield from Bishop.positions_to_take(self, board, i, j)
+        yield from Rook.positions_to_take(self, board, i, j)
 
     @property
-    def occupy_function(self):
+    def takes(self):
         def move_like_a_queen(board, piece_position_i, poiece_position_j, move_to_i, move_to_j):
             valid_movement_like_bishop = Bishop().occupy_function(board, piece_position_i, poiece_position_j, move_to_i, move_to_j)
             valid_movement_like_rook = Rook().occupy_function(board, piece_position_i, poiece_position_j, move_to_i, move_to_j)
             return valid_movement_like_bishop or valid_movement_like_rook
 
         return move_like_a_queen
+
+    @property
+    def piece_identification(self):
+        return 'Q'

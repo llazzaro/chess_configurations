@@ -23,6 +23,9 @@ def load_test_case_input(parameter_filename):
 
 
 def load_test_case_solution(solution_filename):
-        with open(solution_filename, 'r') as solution_file:
-            for solution in solution_file:
-                expected.append(Board.from_json(solution))
+    res = []
+    with open(solution_filename, 'r') as solution_file:
+        for solution in solution_file:
+            res.append(Board.from_json(solution))
+
+    return res

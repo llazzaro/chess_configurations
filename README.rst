@@ -23,6 +23,7 @@ Finds all unique configurations of a set of normal chess pieces on a chess board
 
 * Free software: MIT license
 
+
 Recommended Installations steps
 --------
 
