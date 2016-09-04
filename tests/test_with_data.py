@@ -41,4 +41,6 @@ class TestSavedExecutions(object):
                 for solution in solution_file:
                     expected.append(Board.from_json(solution))
 
+            # just in case we test that all solutions are unique.
+            assert list(set(res)) == res
             assert set(expected) == set(res)
