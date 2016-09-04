@@ -1,8 +1,13 @@
 # -*- coding: utf-8 -*-
+import sys
+import time
+
 from collections import defaultdict
 
+from chess_configurations.draw import draw_board
 
-def backtracking(board, original_pieces, pieces, i, j, result):
+
+def backtracking(board, original_pieces, pieces, i, j, result, animation=None):
     for current_i in range(0, board.n):
         for current_j in range(0, board.m):
             if not pieces:
@@ -22,6 +27,10 @@ def backtracking(board, original_pieces, pieces, i, j, result):
                         # now we have to remove the same type of piece to avoid duplicate results
                         board.clean(current_i, current_j)
 
+    if animation:
+        sys.stdout.write(draw_board(board))
+        sys.stdout.flush()
+        time.sleep(1)
     if board.complete(original_pieces) and board not in result:
         result.add(board)
         yield board.copy()

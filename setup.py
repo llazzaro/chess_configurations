@@ -15,6 +15,7 @@ requirements = [
 ]
 
 test_requirements = [
+    'pytest-profiling',
     'pytest-benchmark',
     'pytest',
     'pdbpp',

@@ -22,6 +22,7 @@ def parse_args():
     parser.add_argument('-p', '--pieces', help='List of pieces to be used. Valid optiosn are: K,Q,B,N,R', required=True)
     parser.add_argument('-o', '--output', help='Output filename')
     parser.add_argument('-f', '--output_format', help='Output format. valid options are: text, json')
+    parser.add_argument('-a', '--animation', help='It will print all solution, even the invalid ones. Usefull for debugging', action='store_true')
 
     return parser.parse_args()
 
@@ -33,14 +34,14 @@ def main():
     for piece_type in args.pieces.split(','):
         pieces.append(mapping[piece_type]())
 
-    for board in backtracking(board, pieces.copy(), pieces, 0, 0, set()):
+    for board in backtracking(board, pieces.copy(), pieces, 0, 0, set(), args.animation):
         if args.output:
             with open(args.output, 'a') as output_file:
                 if args.output_format == 'json':
                     output_file.write(board.to_json() + '\n')
                 if args.output_format == 'text':
                     output_file.write(draw_board(board) + '\n')
-        else:
+        elif not args.animation:
             print(draw_board(board))
 
 
