@@ -19,9 +19,9 @@ def verify_piece_movement(piece, board, valid_positions, current_pos_i, current_
     for i in range(0, board.n):
         for j in range(0, board.m):
             if (i, j) in valid_positions:
-                assert piece.occupy_function(board, current_pos_i, current_pos_j, i, j) is True
+                assert piece.takes(board, current_pos_i, current_pos_j, i, j) is True
             else:
-                assert piece.occupy_function(board, current_pos_i, current_pos_j, i, j) is False
+                assert piece.takes(board, current_pos_i, current_pos_j, i, j) is False
 
 
 class TestBoard:
@@ -102,22 +102,15 @@ class TestBoard:
         board = Board(3, 3)
         for i in range(0, 3):
             for j in range(0, 3):
-                assert board.free(i, j)
-
-    def test_free_outside_the_board_raises_exception(self):
-        board = Board(3, 3)
-        with raises(AssertionError):
-            board.free(100, 1)
-        with raises(AssertionError):
-            board.free(1, 100)
+                assert (i, j) in board.free_positions()
 
     def test_free_with_a_king_in_the_board_happy_path(self):
         king = King()
         board = Board(3, 3)
         board.put(king, 0, 0)
-        assert board.free(0, 0) is False
-        assert board.free(0, 1) is False
-        assert board.free(2, 2) is True
+        assert (0, 0) not in board.free_positions()
+        assert (0, 1) not in board.free_positions()
+        assert (2, 2) in board.free_positions()
 
     def test_complete_with_empty_board(self):
         board = Board(3, 3)
@@ -140,7 +133,7 @@ class TestBoard:
         board = Board(3, 3)
         board.put(king, 1, 1)
 
-        assert [position for position in board.pieces_positions()] == [(1, 1)]
+        assert [position for position in board.piece_positions()] == [(1, 1)]
 
     def test_to_json_with_a_board_with_two_pieces(self):
         king = King()
@@ -179,7 +172,7 @@ class TestKing:
         rook = Rook()
         assert king != rook
 
-    def test_king_occupy_function_happy_cases(self):
+    def test_king_takes_happy_cases(self):
         """
             The King can move anywhere but only by one step.
             This test asserts that the function returns True for all valid cases
@@ -188,23 +181,23 @@ class TestKing:
         king_piece = King()
         small_board = Board(3, 3)
         small_board.put(king_piece, 1, 1)
-        assert king_piece.occupy_function(small_board, 1, 1, 0, 0)
-        assert king_piece.occupy_function(small_board, 1, 1, 0, 1)
-        assert king_piece.occupy_function(small_board, 1, 1, 0, 2)
-        assert king_piece.occupy_function(small_board, 1, 1, 1, 0)
-        assert king_piece.occupy_function(small_board, 1, 1, 1, 1)
-        assert king_piece.occupy_function(small_board, 1, 1, 1, 2)
-        assert king_piece.occupy_function(small_board, 1, 1, 2, 0)
-        assert king_piece.occupy_function(small_board, 1, 1, 2, 0)
-        assert king_piece.occupy_function(small_board, 1, 1, 2, 1)
-        assert king_piece.occupy_function(small_board, 1, 1, 2, 2)
+        assert king_piece.takes(small_board, 1, 1, 0, 0)
+        assert king_piece.takes(small_board, 1, 1, 0, 1)
+        assert king_piece.takes(small_board, 1, 1, 0, 2)
+        assert king_piece.takes(small_board, 1, 1, 1, 0)
+        assert king_piece.takes(small_board, 1, 1, 1, 1)
+        assert king_piece.takes(small_board, 1, 1, 1, 2)
+        assert king_piece.takes(small_board, 1, 1, 2, 0)
+        assert king_piece.takes(small_board, 1, 1, 2, 0)
+        assert king_piece.takes(small_board, 1, 1, 2, 1)
+        assert king_piece.takes(small_board, 1, 1, 2, 2)
 
     def test_king_cant_move_more_than_one_step(self):
         king_piece = King()
         small_board = Board(3, 3)
         small_board.put(king_piece, 0, 0)
-        assert king_piece.occupy_function(small_board, 0, 0, 2, 2) is False
-        assert king_piece.occupy_function(small_board, 0, 0, 0, 2) is False
+        assert king_piece.takes(small_board, 0, 0, 2, 2) is False
+        assert king_piece.takes(small_board, 0, 0, 0, 2) is False
 
     def test_king_identification_is_K(self):
         piece = King()
@@ -217,20 +210,20 @@ class TestRook:
         rook_piece = Rook()
         small_board = Board(3, 3)
         small_board.put(rook_piece, 0, 0)
-        assert rook_piece.occupy_function(small_board, 0, 0, 0, 0)
-        assert rook_piece.occupy_function(small_board, 0, 0, 0, 1)
-        assert rook_piece.occupy_function(small_board, 0, 0, 0, 2)
-        assert rook_piece.occupy_function(small_board, 0, 0, 1, 0)
-        assert rook_piece.occupy_function(small_board, 0, 0, 2, 0)
+        assert rook_piece.takes(small_board, 0, 0, 0, 0)
+        assert rook_piece.takes(small_board, 0, 0, 0, 1)
+        assert rook_piece.takes(small_board, 0, 0, 0, 2)
+        assert rook_piece.takes(small_board, 0, 0, 1, 0)
+        assert rook_piece.takes(small_board, 0, 0, 2, 0)
 
     def test_rook_cant_move_can_move_in_diagonal_direction(self):
         rook_piece = Rook()
         small_board = Board(3, 3)
         small_board.put(rook_piece, 1, 2)
-        assert rook_piece.occupy_function(small_board, 0, 0, 1, 1) is False
-        assert rook_piece.occupy_function(small_board, 0, 0, 2, 2) is False
+        assert rook_piece.takes(small_board, 0, 0, 1, 1) is False
+        assert rook_piece.takes(small_board, 0, 0, 2, 2) is False
         # just in case
-        assert rook_piece.occupy_function(small_board, 0, 0, 1, 2) is False
+        assert rook_piece.takes(small_board, 0, 0, 1, 2) is False
 
     def test_rook_identification_is_R(self):
         piece = Rook()
@@ -238,7 +231,7 @@ class TestRook:
 
 class TestKnight:
 
-    def test_occupy_functions(self):
+    def test_takess(self):
         knight = Knight()
         small_board = Board(5, 5)
         small_board.put(knight, 2, 2)
@@ -261,7 +254,7 @@ class TestKnight:
 
 class TestBishop:
 
-    def test_occupy_functions_diagonal(self):
+    def test_takess_diagonal(self):
         bishop = Bishop()
         small_board = Board(3, 3)
         small_board.put(bishop, 0, 0)
@@ -282,7 +275,7 @@ class TestQueen:
         queen = Queen()
         assert queen.piece_identification == 'Q'
 
-    def test_occupy_function_in_diagonal_vertical_and_horizontal(self):
+    def test_takes_in_diagonal_vertical_and_horizontal(self):
         queen = Queen()
         small_board = Board(3, 3)
         small_board.put(queen, 0, 0)
