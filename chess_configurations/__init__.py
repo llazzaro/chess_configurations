@@ -25,7 +25,7 @@ class MultiProcessSolverConsumer(Process):
             self.results_queue.put(board.to_json())
 
 
-class MultiProcessSolverProducer(Process)
+class MultiProcessSolverProducer(Process):
 
     def __init__(self, n, m, pieces, parameter_queue):
         self.n = n

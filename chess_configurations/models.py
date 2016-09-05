@@ -57,6 +57,9 @@ class Board:
         for position, piece_type in raw_dict['pieces'].items():
             i, j = position.strip(')').strip('(').split(',')
             res.put(mapping[piece_type](), int(i), int(j))
+        for free_place in raw_dict['free_places']:
+            i, j = position.strip(')').strip('(').split(',')
+            res.free_places.append((i, j))
 
         return res
 
@@ -70,8 +73,8 @@ class Board:
         return json.dumps({
             'n': self.n,
             'm': self.m,
-            'pieces': pieces_dict
-            'free_places': raise NotImplementedError()
+            'pieces': pieces_dict,
+            'free_places': map(str, self.free_places)
         })
 
     def put(self, piece, i, j):
