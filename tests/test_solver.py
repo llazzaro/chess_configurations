@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import json
 
 import pytest
 
@@ -14,14 +15,17 @@ class TestSolverWithBoardCases(object):
 
     def test_very_simple_1x1_board_with_one_piece(self):
         """
-            A board with one position
+            A board with one position available.
         """
+        expected = [{'pieces': {'(0, 0)': 'K'}, 'n': 1, 'm': 1}]
         board = Board(1, 1)
-        pieces = []
+        pieces = [King()]
+        board.put(pieces[0], 0, 0)
         res = []
         for board in backtracking(board, pieces, pieces, 0, 0, set()):
-            print(board.pieces)
-            res.append(board)
+            res.append(json.loads(board.to_json()))
+
+        assert res == expected
 
     def test_a_board_were_only_one_piece_can_be_added(self):
         """
@@ -37,105 +41,33 @@ class TestSolverWithBoardCases(object):
             To make checks easily see: test_with_data which uses a "fuzzer"
             case generator to verify results.
         """
+        expected = [
+                {'pieces': {'(2, 0)': 'K', '(1, 2)': 'R', '(0, 0)': 'K'}, 'm': 3, 'n': 3},
+                {'pieces': {'(0, 2)': 'K', '(2, 1)': 'R', '(0, 0)': 'K'}, 'm': 3, 'n': 3},
+                {'pieces': {'(0, 1)': 'R', '(2, 0)': 'K', '(2, 2)': 'K'}, 'm': 3, 'n': 3},
+                {'pieces': {'(0, 2)': 'K', '(1, 0)': 'R', '(2, 2)': 'K'}, 'm': 3, 'n': 3}]
         pieces = [King(), King(), Rook()]
         board = Board(3, 3)
         res = []
         for board in backtracking(board, pieces.copy(), pieces, 0, 0, set()):
-            res.append(board)
-        assert len(res) == 4
-        assert list(set(res)) == res
+            res.append(json.loads(board.to_json()))
 
-        board_0 = res[0]
-        assert board_0.pieces[(0, 0)].piece_identification == 'K'
-        assert board_0.pieces[(0, 2)].piece_identification == 'K'
-        assert board_0.pieces[(2, 1)].piece_identification == 'R'
-
-        board_1 = res[1]
-        assert board_1.pieces[(0, 0)].piece_identification == 'K'
-        assert board_1.pieces[(2, 0)].piece_identification == 'K'
-        assert board_1.pieces[(1, 2)].piece_identification == 'R'
-
-        board_2 = res[2]
-        assert board_2.pieces[(0, 1)].piece_identification == 'R'
-        assert board_2.pieces[(2, 0)].piece_identification == 'K'
-        assert board_2.pieces[(2, 2)].piece_identification == 'K'
-
-        board_3 = res[3]
-        assert board_3.pieces[(1, 0)].piece_identification == 'R'
-        assert board_3.pieces[(0, 2)].piece_identification == 'K'
-        assert board_3.pieces[(2, 2)].piece_identification == 'K'
+        assert res == expected
 
     def test_example_2_test_case_given(self):
+        expected = [
+                {'pieces': {'(3, 3)': 'N', '(1, 1)': 'N', '(2, 2)': 'R', '(3, 1)': 'N', '(1, 3)': 'N', '(0, 0)': 'R'}, 'm': 4, 'n': 4},
+                {'pieces': {'(2, 0)': 'N', '(0, 2)': 'N', '(3, 1)': 'R', '(1, 3)': 'R', '(0, 0)': 'N', '(2, 2)': 'N'}, 'm': 4, 'n': 4},
+                {'pieces': {'(3, 3)': 'R', '(1, 1)': 'R', '(2, 0)': 'N', '(2, 2)': 'N', '(0, 0)': 'N', '(0, 2)': 'N'}, 'm': 4, 'n': 4},
+                {'pieces': {'(0, 1)': 'R', '(2, 3)': 'R', '(1, 2)': 'N', '(1, 0)': 'N', '(3, 2)': 'N', '(3, 0)': 'N'}, 'm': 4, 'n': 4},
+                {'pieces': {'(0, 1)': 'N', '(2, 1)': 'N', '(1, 2)': 'R', '(2, 3)': 'N', '(0, 3)': 'N', '(3, 0)': 'R'}, 'm': 4, 'n': 4},
+                {'pieces': {'(0, 1)': 'N', '(2, 3)': 'N', '(2, 1)': 'N', '(1, 0)': 'R', '(3, 2)': 'R', '(0, 3)': 'N'}, 'm': 4, 'n': 4},
+                {'pieces': {'(3, 3)': 'N', '(1, 1)': 'N', '(2, 0)': 'R', '(0, 2)': 'R', '(3, 1)': 'N', '(1, 3)': 'N'}, 'm': 4, 'n': 4},
+                {'pieces': {'(2, 1)': 'R', '(1, 2)': 'N', '(1, 0)': 'N', '(3, 2)': 'N', '(0, 3)': 'R', '(3, 0)': 'N'}, 'm': 4, 'n': 4}]
         pieces = [Rook(), Rook(), Knight(), Knight(), Knight(), Knight()]
         board = Board(4, 4)
         res = []
-        return
         for board in backtracking(board, pieces.copy(), pieces, 0, 0, set()):
-            res.append(board)
+            res.append(json.loads(board.to_json()))
 
-        assert len(res) == 8
-        assert list(set(res)) == res
-
-        board_0 = res[0]
-        assert board_0.pieces[(1, 3)].piece_identification == 'N'
-        assert board_0.pieces[(3, 3)].piece_identification == 'N'
-        assert board_0.pieces[(2, 2)].piece_identification == 'R'
-        assert board_0.pieces[(3, 1)].piece_identification == 'N'
-        assert board_0.pieces[(1, 1)].piece_identification == 'N'
-        assert board_0.pieces[(0, 0)].piece_identification == 'R'
-
-        board_1 = res[1]
-        assert board_1.pieces[(2, 0)].piece_identification == 'N'
-        assert board_1.pieces[(0, 0)].piece_identification == 'N'
-        assert board_1.pieces[(3, 3)].piece_identification == 'R'
-        assert board_1.pieces[(2, 2)].piece_identification == 'N'
-        assert board_1.pieces[(1, 1)].piece_identification == 'R'
-        assert board_1.pieces[(0, 2)].piece_identification == 'N'
-
-        board_2 = res[2]
-        assert board_2.pieces[(2, 0)].piece_identification == 'N'
-        assert board_2.pieces[(1, 3)].piece_identification == 'R'
-        assert board_2.pieces[(2, 2)].piece_identification == 'N'
-        assert board_2.pieces[(3, 1)].piece_identification == 'R'
-        assert board_2.pieces[(0, 2)].piece_identification == 'N'
-        assert board_2.pieces[(0, 0)].piece_identification == 'N'
-
-        board_3 = res[3]
-        assert board_3.pieces[(0, 1)].piece_identification == 'R'
-        assert board_3.pieces[(1, 2)].piece_identification == 'N'
-        assert board_3.pieces[(3, 2)].piece_identification == 'N'
-        assert board_3.pieces[(2, 3)].piece_identification == 'R'
-        assert board_3.pieces[(3, 0)].piece_identification == 'N'
-        assert board_3.pieces[(1, 0)].piece_identification == 'N'
-
-        board_4 = res[4]
-        assert board_4.pieces[(0, 1)].piece_identification == 'N'
-        assert board_4.pieces[(3, 2)].piece_identification == 'R'
-        assert board_4.pieces[(2, 3)].piece_identification == 'N'
-        assert board_4.pieces[(0, 3)].piece_identification == 'N'
-        assert board_4.pieces[(1, 0)].piece_identification == 'R'
-        assert board_4.pieces[(2, 1)].piece_identification == 'N'
-
-        board_5 = res[5]
-        assert board_5.pieces[(0, 1)].piece_identification == 'N'
-        assert board_5.pieces[(1, 2)].piece_identification == 'R'
-        assert board_5.pieces[(2, 3)].piece_identification == 'N'
-        assert board_5.pieces[(3, 0)].piece_identification == 'R'
-        assert board_5.pieces[(0, 3)].piece_identification == 'N'
-        assert board_5.pieces[(2, 1)].piece_identification == 'N'
-
-        board_6 = res[6]
-        assert board_6.pieces[(2, 0)].piece_identification == 'R'
-        assert board_6.pieces[(1, 3)].piece_identification == 'N'
-        assert board_6.pieces[(3, 3)].piece_identification == 'N'
-        assert board_6.pieces[(3, 1)].piece_identification == 'N'
-        assert board_6.pieces[(1, 1)].piece_identification == 'N'
-        assert board_6.pieces[(0, 2)].piece_identification == 'R'
-
-        board_7 = res[7]
-        assert board_7.pieces[(1, 2)].piece_identification == 'N'
-        assert board_7.pieces[(3, 2)].piece_identification == 'N'
-        assert board_7.pieces[(3, 0)].piece_identification == 'N'
-        assert board_7.pieces[(0, 3)].piece_identification == 'R'
-        assert board_7.pieces[(1, 0)].piece_identification == 'N'
-        assert board_7.pieces[(2, 1)].piece_identification == 'R'
+        assert res == expected

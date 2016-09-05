@@ -42,6 +42,7 @@ workon chess_configuration
 
 configurations -m 7 -n 7 --pieces=K,Q,B,R
 
+
 Unit test execution
 --------
 
@@ -64,6 +65,7 @@ More arguments
 
 configurations command also supports the following arguments:
 
+* --animation : will show every board, even invalid ones!
 * --output : which will save the configuration to the specified file.
 * --output_format : text or json can be used.
 
