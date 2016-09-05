@@ -16,20 +16,28 @@ from chess_configurations.solver import backtracking
 
 
 def parse_args():
+    """
+        function that parses the command line arguments
+    """
     # Create the arguments
     parser = argparse.ArgumentParser()
 
     parser.add_argument('-n', help='The value N of the board nxm', required=True)
     parser.add_argument('-m', help='The value M of the board nxm', required=True)
-    parser.add_argument('-p', '--pieces', help='List of pieces to be used. Valid optiosn are: K,Q,B,N,R', required=True)
+    pieces_help = 'List of pieces to be used. Valid optiosn are: K,Q,B,N,R'
+    parser.add_argument('-p', '--pieces', help=pieces_help, required=True)
     parser.add_argument('-o', '--output', help='Output filename')
     parser.add_argument('-f', '--output_format', help='Output format. valid options are: text, json')
-    parser.add_argument('-a', '--animation', help='It will print all solution, even the invalid ones. Usefull for debugging', action='store_true')
+    animation_help = 'It will print all solution, even the invalid ones. Usefull for debugging'
+    parser.add_argument('-a', '--animation', help=animation_help, action='store_true')
 
     return parser.parse_args()
 
 
 def main():
+    """
+        Main function that instanciates the problem and then calls backtracking solver
+    """
     mapping = {'K': King, 'Q': Queen, 'R': Rook, 'B': Bishop, 'N': Knight}
     args = parse_args()
     board = Board(int(args.n), int(args.m))

@@ -4,12 +4,12 @@
 from setuptools import setup, find_packages
 
 with open('README.rst') as readme_file:
-    readme = readme_file.read()
+    README = readme_file.read()
 
 with open('HISTORY.rst') as history_file:
-    history = history_file.read()
+    HISTORY = history_file.read()
 
-requirements = [
+REQUIREMENTS = [
     'Click>=6.0',
     'pytest',
     'pytest-runner',
@@ -21,14 +21,14 @@ requirements = [
 
 ]
 
-test_requirements = [
+TEST_REQUIREMENTS = [
 ]
 
 setup(
     name='chess_configurations',
     version='0.1.0',
     description="Finds all unique configurations of a set of normal chess pieces on a chess boa",
-    long_description=readme + '\n\n' + history,
+    long_description=README + '\n\n' + HISTORY,
     author="Leonardo Lazzaro",
     author_email='llazzaro@dc.uba.ar',
     url='https://github.com/llazzaro/chess_configurations',
@@ -43,7 +43,7 @@ setup(
         ]
     },
     include_package_data=True,
-    install_requires=requirements,
+    install_requires=REQUIREMENTS,
     license="MIT license",
     zip_safe=False,
     keywords='chess_configurations',
@@ -61,5 +61,5 @@ setup(
         'Programming Language :: Python :: 3.5',
     ],
     test_suite='tests',
-    tests_require=test_requirements,
+    tests_require=TEST_REQUIREMENTS,
 )

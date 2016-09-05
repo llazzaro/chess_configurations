@@ -3,10 +3,16 @@ import json
 
 
 class Board:
+    """
+        Instances of this class represents the board were
+        pieces can be put.
+        The board can tell you which places are free and if a free
+        position can be taken.
+    """
 
-    def __init__(self, n, m):
-        self.n = n
-        self.m = m
+    def __init__(self, dimension_n, dimension_m):
+        self.n = dimension_n
+        self.m = dimension_m
         self.pieces = {}
         self.free_places = []
         self._reset_free_places()
@@ -41,13 +47,13 @@ class Board:
             Since __eq__ was implemented it was required to add the __hash__
         """
         dimension = '{0}{1}'.format(self.n, self.m)
-        positions = ''.join(sorted(map(lambda position: str(position), self.pieces.keys())))
-        pieces = ''.join(sorted(map(lambda piece: piece.piece_identification, self.pieces.values())))
+        positions = ''.join(sorted(map(str, self.pieces.keys())))
+        pieces = map(lambda piece: piece.piece_identification, self.pieces.values())
 
-        return hash((dimension, positions, pieces))
+        return hash((dimension, positions, ''.join(sorted(pieces))))
 
     @classmethod
-    def from_json(self, data):
+    def from_json(cls, data):
         """
             Use this class method to load board from json
         """
@@ -88,7 +94,10 @@ class Board:
         self.pieces[(i, j)] = piece
 
     def copy(self):
-        """ Returns a copy of the board. this is used to avoid destroying board on the backtracking"""
+        """
+            Returns a copy of the board.
+            this is used to avoid destroying board on the backtracking
+        """
         res = Board(self.n, self.m)
         for position, piece in self.pieces.items():
             res.pieces[position] = piece
@@ -202,20 +211,20 @@ class King(Piece):
     def positions_to_take(self, board, i, j):
         """ See Piece class for more information """
         all_positions = [
-                (i - 1, j), (i - 1, j - 1), (i, j - 1),
-                (i, j), (i - 1, j + 1), (i + 1, j - 1),
-                (i + 1, j), (i + 1, j + 1), (i, j + 1)]
+            (i - 1, j), (i - 1, j - 1), (i, j - 1),
+            (i, j), (i - 1, j + 1), (i + 1, j - 1),
+            (i + 1, j), (i + 1, j + 1), (i, j + 1)]
 
         return [(i, j) for i, j in all_positions if 0 <= i < board.n and 0 <= j < board.m]
 
     @property
     def takes(self):
         """ See Piece class for more information """
-        def move_anywhere_by_one_place(board, piece_position_i, piece_position_j, move_to_i, move_to_j):
+        def move_anywhere_by_one_place(_, position_i, position_j, move_to_i, move_to_j):
             """
                 King can move anywhere by only one step.
             """
-            return abs(piece_position_i - move_to_i) <= 1 and abs(piece_position_j - move_to_j) <= 1
+            return abs(position_i - move_to_i) <= 1 and abs(position_j - move_to_j) <= 1
 
         return move_anywhere_by_one_place
 
@@ -239,12 +248,12 @@ class Rook(Piece):
     @property
     def takes(self):
         """ See Piece class for more information """
-        def move_vertically_or_horizontally(board, piece_position_i, piece_position_j, move_to_i, move_to_j):
+        def move_vertically_or_horizontally(board, position_i, position_j, move_to_i, move_to_j):
             """
                 Rooks can move vertically or horizontally only
             """
-            valid_i_moves = piece_position_i == move_to_i and move_to_j % board.m == 0 or piece_position_i == move_to_i
-            valid_j_moves = piece_position_j == move_to_j and move_to_i % board.n == 0 or piece_position_j == move_to_j
+            valid_i_moves = position_i == move_to_i and move_to_j % board.m == 0 or position_i == move_to_i
+            valid_j_moves = position_j == move_to_j and move_to_i % board.n == 0 or position_j == move_to_j
             return valid_i_moves or valid_j_moves
 
         return move_vertically_or_horizontally
@@ -283,12 +292,14 @@ class Knight(Piece):
     @property
     def takes(self):
         """ See Piece class for more information """
-        def move_with_as_knight(board, piece_position_i, piece_position_j, move_to_i, move_to_j):
+        def move_with_as_knight(_, position_i, position_j, move_to_i, move_to_j):
             """
+                Knight move in a L shape. this function check if the position to move
+                is valid in O(1)
             """
-            valid_shape_move_1 = abs(piece_position_i - move_to_i) == 1 and abs(piece_position_j - move_to_j) == 2
-            valid_shape_move_2 = abs(piece_position_i - move_to_i) == 2 and abs(piece_position_j - move_to_j) == 1
-            no_move = piece_position_i == move_to_i and piece_position_j == move_to_j
+            valid_shape_move_1 = abs(position_i - move_to_i) == 1 and abs(position_j - move_to_j) == 2
+            valid_shape_move_2 = abs(position_i - move_to_i) == 2 and abs(position_j - move_to_j) == 1
+            no_move = position_i == move_to_i and position_j == move_to_j
             return any([valid_shape_move_1, valid_shape_move_2, no_move])
 
         return move_with_as_knight
@@ -314,11 +325,11 @@ class Bishop(Piece):
     @property
     def takes(self):
         """ See Piece class for more information """
-        def move_vertically_or_horizontally(board, piece_position_i, piece_position_j, move_to_i, move_to_j):
+        def move_vertically_or_horizontally(_, position_i, position_j, move_to_i, move_to_j):
             """
                 Bishop can move only in diagonal
             """
-            return abs(piece_position_i - move_to_i) == abs(piece_position_j - move_to_j)
+            return abs(position_i - move_to_i) == abs(position_j - move_to_j)
 
         return move_vertically_or_horizontally
 
@@ -342,9 +353,12 @@ class Queen(Rook, Bishop):
     @property
     def takes(self):
         """ See Piece class for more information """
-        def move_like_a_queen(board, piece_position_i, poiece_position_j, move_to_i, move_to_j):
-            valid_movement_like_bishop = Bishop().takes(board, piece_position_i, poiece_position_j, move_to_i, move_to_j)
-            valid_movement_like_rook = Rook().takes(board, piece_position_i, poiece_position_j, move_to_i, move_to_j)
+        def move_like_a_queen(board, position_i, position_j, move_to_i, move_to_j):
+            """
+                Queen can move in diagonal, vertical and horital directions
+            """
+            valid_movement_like_bishop = Bishop().takes(board, position_i, position_j, move_to_i, move_to_j)
+            valid_movement_like_rook = Rook().takes(board, position_i, position_j, move_to_i, move_to_j)
             return valid_movement_like_bishop or valid_movement_like_rook
 
         return move_like_a_queen
