@@ -26,6 +26,7 @@ def load_test_case_solution(solution_filename):
     res = []
     with open(solution_filename, 'r') as solution_file:
         for solution in solution_file:
-            res.append(Board.from_json(solution))
+            if solution.strip('\n'):
+                res.append(Board.from_json(solution))
 
     return res
