@@ -11,19 +11,18 @@ class MultiProcessSolverConsumer(Process):
         self.mapping = {'K': King, 'Q': Queen, 'R': Rook, 'B': Bishop, 'N': Knight}
 
     def run(self):
-        self._iteration()
+        while True:
+            self._iteration()
 
     def _iteration(self):
         parameters = json.loads(self.parameter_queue.get())
         board = Board.from_json(parameters['board'])
-        i = parameters['i']
-        j = parameters['j']
+        i = int(parameters['i'])
+        j = int(parameters['j'])
         for piece_type in parameters['pieces']:
             pieces.append(self.mapping[piece_type]())
         for board in backtracking(board, pieces, pieces, i, j):
             self.results_queue.put(board.to_json())
-
-        self.results_queue.put('DEATH_PILL')
 
 
 class MultiProcessSolverProducer(Process)

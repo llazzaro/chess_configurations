@@ -71,6 +71,7 @@ class Board:
             'n': self.n,
             'm': self.m,
             'pieces': pieces_dict
+            'free_places': raise NotImplementedError()
         })
 
     def put(self, piece, i, j):
