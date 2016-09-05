@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+import time
 import argparse
+
 from chess_configurations.draw import draw_board
 from chess_configurations.models import (
     King,
@@ -34,7 +36,9 @@ def main():
     for piece_type in args.pieces.split(','):
         pieces.append(mapping[piece_type]())
 
-    for board in backtracking(board, pieces.copy(), pieces, 0, 0, set(), args.animation):
+    res = set()
+    start = time.time()
+    for board in backtracking(board, pieces.copy(), pieces, 0, 0, res, args.animation):
         if args.output:
             with open(args.output, 'a') as output_file:
                 if args.output_format == 'json':
@@ -43,7 +47,9 @@ def main():
                     output_file.write(draw_board(board) + '\n')
         elif not args.animation:
             print(draw_board(board))
-
+    end = time.time()
+    print('Total unique configurations found {0}'.format(len(res)))
+    print('Total time {0} seconds'.format(end - start))
 
 if __name__ == '__main__':
     main()
