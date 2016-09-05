@@ -4,8 +4,6 @@ import os
 import json
 from glob import iglob
 
-import pytest
-
 from chess_configurations.solver import backtracking
 from chess_configurations.models import (
     Board,
@@ -32,7 +30,7 @@ class TestSavedExecutions(object):
                 for piece_type in input_parameters['pieces']:
                     pieces.append(mapping[piece_type]())
                 res = []
-                for board in backtracking(board, pieces.copy(), pieces, 0, 0, set()):
+                for board in backtracking(board, pieces.copy(), pieces, set()):
                     res.append(board)
 
             solution_filename = 'solution_{0}'.format(case_nro)
@@ -42,5 +40,6 @@ class TestSavedExecutions(object):
                     expected.append(Board.from_json(solution))
 
             # just in case we test that all solutions are unique.
-            assert list(set(res)) == res
-            assert set(expected) == set(res)
+            assert len(expected) == len(res)
+            for expected_res in expected:
+                assert expected_res in res

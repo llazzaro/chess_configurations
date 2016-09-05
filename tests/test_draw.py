@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from pytest import raises
-
-from chess_configurations.models import Board, King, Rook, Knight
+from chess_configurations.models import Board, King, Rook
 from chess_configurations.draw import draw_board
+
 
 class TestDraw:
 
     def test_draw_an_empy_board(self):
-        expected =  "┌──────┐\n"
+        expected = "┌──────┐\n"
         expected += "│_ _ _ │\n"
         expected += "│_ _ _ │\n"
         expected += "│_ _ _ │\n"
@@ -19,7 +18,7 @@ class TestDraw:
         assert res == expected
 
     def test_draw_a_board_with_one_king(self):
-        expected =  "┌──────┐\n"
+        expected = "┌──────┐\n"
         expected += "│K _ _ │\n"
         expected += "│_ _ _ │\n"
         expected += "│_ _ _ │\n"
@@ -31,7 +30,7 @@ class TestDraw:
         assert res == expected
 
     def test_draw_a_board_with_one_king_right_corner(self):
-        expected =  "┌──────┐\n"
+        expected = "┌──────┐\n"
         expected += "│_ _ _ │\n"
         expected += "│_ _ _ │\n"
         expected += "│_ _ K │\n"

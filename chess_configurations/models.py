@@ -127,6 +127,18 @@ class Board:
         """
         return self.free_places
 
+    def conflict(self, current_i, current_j):
+        """
+            Check if other piece could take the position current_i, current_j
+        """
+        other_takes_place = False
+        for position, board_piece in self.pieces.items():
+            if board_piece.takes(self, position[0], position[1], current_i, current_j):
+                other_takes_place = True
+                break
+
+        return other_takes_place
+
 
 class Piece:
     """
@@ -256,7 +268,7 @@ class Knight(Piece):
         position_6 = (i - 1, j + 2)
         position_7 = (i + 1, j + 2)
         position_8 = (i + 2, j + 1)
-        return filter(lambda pos: 0 <= pos[0] < board.n and 0 <= pos[1] < board.m,[
+        return filter(lambda pos: 0 <= pos[0] < board.n and 0 <= pos[1] < board.m, [
             position_1,
             position_2,
             position_3,

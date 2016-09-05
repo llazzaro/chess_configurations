@@ -154,11 +154,60 @@ class TestBoard:
         res = Board.from_json('{"m": 4, "pieces": {"(2, 2)": "R", "(1, 1)": "K"}, "n": 3}')
         assert res == expected_board
 
+    def test_equals_case_detected_in_a_bug(self):
+        board_set = set()
+
+        board = Board(6, 4)
+        rook = Rook()
+        queen = Queen()
+        bishop = Bishop()
+        board.put(rook, 2, 1)
+        board.put(queen, 4, 0)
+        board.put(bishop, 5, 2)
+        board_set.add(board)
+
+        another_board = Board(6, 4)
+        rook = Rook()
+        queen = Queen()
+        bishop = Bishop()
+        another_board.put(rook, 2, 1)
+        another_board.put(queen, 4, 0)
+        another_board.put(bishop, 5, 2)
+
+        assert another_board in board_set
+
+        board_set.add(another_board)
+        assert len(board_set) == 1
+
+    def test_conflict_special_case_found(self):
+        board = Board(6, 4)
+        rook = Rook()
+        queen = Queen()
+        board.put(rook, 2, 1)
+        assert board.conflict(4, 0) is False
+        assert board.conflict(5, 2) is False
+        assert (5, 2) in board.free_positions()
+        board.put(queen, 4, 0)
+        assert (5, 2) in board.free_positions()
+        assert board.conflict(5, 2) is False
+
+    def test_clean_frees_places_in_the_board(self):
+        board = Board(4, 4)
+        rook = Rook()
+        board.put(rook, 2, 2)
+        expected = [(0, 1), (0, 0), (1, 3), (3, 3), (3, 0), (3, 1), (1, 0), (1, 1), (0, 3)]
+        assert expected == board.free_positions()
+        expected_after_clean = [(0, 1), (0, 0), (1, 3), (3, 3), (3, 0), (3, 1), (1, 0), (1, 1), (0, 3), (0, 2), (1, 2), (2, 2), (3, 2), (2, 0), (2, 1), (2, 2), (2, 3)]
+        board.clean(2, 2)
+        assert expected_after_clean == board.free_positions()
+
+
 class TestPiece:
 
     def test_equals_against_other_object(self):
         piece = Piece()
         assert piece != 1
+
 
 class TestKing:
 
@@ -226,25 +275,6 @@ class TestRook:
         rook_piece = Rook()
         small_board = Board(3, 3)
         small_board.put(rook_piece, 0, 0)
-        assert rook_piece.occupy_function(small_board, 0, 0, 0, 0)
-        assert rook_piece.occupy_function(small_board, 0, 0, 0, 1)
-        assert rook_piece.occupy_function(small_board, 0, 0, 0, 2)
-        assert rook_piece.occupy_function(small_board, 0, 0, 1, 0)
-        assert rook_piece.occupy_function(small_board, 0, 0, 2, 0)
-
-    def test_rook_cant_move_can_move_in_diagonal_direction(self):
-        rook_piece = Rook()
-        small_board = Board(3, 3)
-        small_board.put(rook_piece, 1, 2)
-        assert rook_piece.occupy_function(small_board, 0, 0, 1, 1) is False
-        assert rook_piece.occupy_function(small_board, 0, 0, 2, 2) is False
-        # just in case
-        assert rook_piece.occupy_function(small_board, 0, 0, 1, 2) is False
-
-    def test_rook_valid_moves(self):
-        rook_piece = Rook()
-        small_board = Board(3, 3)
-        small_board.put(rook_piece, 0, 0)
         assert rook_piece.takes(small_board, 0, 0, 0, 0)
         assert rook_piece.takes(small_board, 0, 0, 0, 1)
         assert rook_piece.takes(small_board, 0, 0, 0, 2)
@@ -263,6 +293,7 @@ class TestRook:
     def test_rook_identification_is_R(self):
         piece = Rook()
         assert piece.piece_identification == 'R'
+
 
 class TestKnight:
 
@@ -304,6 +335,7 @@ class TestKnight:
         piece = Knight()
         assert piece.piece_identification == 'N'
 
+
 class TestBishop:
 
     def test_model_positions_to_take(self):
@@ -341,6 +373,7 @@ class TestBishop:
         piece = Bishop()
         assert piece.piece_identification == 'B'
 
+
 class TestQueen:
 
     def test_queen_identification_is_Q(self):
@@ -361,7 +394,6 @@ class TestQueen:
             (2, 0),
         ]
         verify_piece_movement(queen, small_board, valid_positions, 0, 0)
-
 
     def test_model_positions_to_take(self):
         board = Board(3, 3)

@@ -28,6 +28,7 @@ def parse_args():
 
     return parser.parse_args()
 
+
 def main():
     mapping = {'K': King, 'Q': Queen, 'R': Rook, 'B': Bishop, 'N': Knight}
     args = parse_args()
@@ -38,7 +39,7 @@ def main():
 
     res = set()
     start = time.time()
-    for board in backtracking(board, pieces.copy(), pieces, 0, 0, res, args.animation):
+    for board in backtracking(board, pieces.copy(), pieces, res, args.animation):
         if args.output:
             with open(args.output, 'a') as output_file:
                 if args.output_format == 'json':

@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 import json
 
-import pytest
-
 from chess_configurations.solver import backtracking
 from chess_configurations.models import Board, King, Rook, Knight
 
@@ -22,17 +20,10 @@ class TestSolverWithBoardCases(object):
         pieces = [King()]
         board.put(pieces[0], 0, 0)
         res = []
-        for board in backtracking(board, pieces, pieces, 0, 0, set()):
+        for board in backtracking(board, pieces, pieces, set()):
             res.append(json.loads(board.to_json()))
 
         assert res == expected
-
-    def test_a_board_were_only_one_piece_can_be_added(self):
-        """
-            In this case we will set a board of 2x2 with only queen.
-            There is no way to add more than one piece.
-        """
-        pass
 
     def test_example_test_case_given(self):
         """
@@ -49,10 +40,11 @@ class TestSolverWithBoardCases(object):
         pieces = [King(), King(), Rook()]
         board = Board(3, 3)
         res = []
-        for board in backtracking(board, pieces.copy(), pieces, 0, 0, set()):
+        for board in backtracking(board, pieces.copy(), pieces, set()):
             res.append(json.loads(board.to_json()))
-
-        assert res == expected
+        assert len(expected) == len(res)
+        for expected_res in expected:
+            assert expected_res in res
 
     def test_example_2_test_case_given(self):
         expected = [
@@ -67,7 +59,9 @@ class TestSolverWithBoardCases(object):
         pieces = [Rook(), Rook(), Knight(), Knight(), Knight(), Knight()]
         board = Board(4, 4)
         res = []
-        for board in backtracking(board, pieces.copy(), pieces, 0, 0, set()):
+        for board in backtracking(board, pieces.copy(), pieces, set()):
             res.append(json.loads(board.to_json()))
 
-        assert res == expected
+        assert len(expected) == len(res)
+        for expected_res in expected:
+            assert expected_res in res

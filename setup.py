@@ -11,16 +11,17 @@ with open('HISTORY.rst') as history_file:
 
 requirements = [
     'Click>=6.0',
+    'pytest',
     'pytest-runner',
-]
-
-test_requirements = [
     'pytest-profiling',
     'pytest-benchmark',
-    'pytest',
     'pdbpp',
     'pytest-cov',
     'mock',
+
+]
+
+test_requirements = [
 ]
 
 setup(
