@@ -29,6 +29,8 @@ Recommended Installations steps
 
 pip install virtualenvwrapper
 
+. /usr/local/bin/virtualenvwrapper.sh (works in ubuntu)
+
 mkvirtualenv chess_configuration
 
 pip install git+https://github.com/llazzaro/chess_configurations.git
@@ -92,4 +94,3 @@ This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypack
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
-
