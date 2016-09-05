@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from setuptools import setup
+from setuptools import setup, find_packages
 
 with open('README.rst') as readme_file:
     readme = readme_file.read()
@@ -31,9 +31,7 @@ setup(
     author="Leonardo Lazzaro",
     author_email='llazzaro@dc.uba.ar',
     url='https://github.com/llazzaro/chess_configurations',
-    packages=[
-        'chess_configurations',
-    ],
+    packages=find_packages(),
     dependency_links=[
     ],
     package_dir={'chess_configurations':
