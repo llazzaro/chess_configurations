@@ -162,6 +162,22 @@ class TestPiece:
 
 class TestKing:
 
+    def test_of_a_bug_it_was_possible_to_put_a_king_that_takes_a_rook(self):
+        king = King()
+        board = Board(3, 3)
+        board.put(king, 0, 0)
+        positions_to_take = king.positions_to_take(board, 0, 0)
+        assert (0, 1) in positions_to_take
+
+    def test_positions_used_from_for_king_in_the_upper_corner_are_valid(self):
+        king_piece = King()
+        small_board = Board(3, 3)
+        assert (0, 0) in king_piece.positions_to_take(small_board, 0, 0)
+        assert (1, 0) in king_piece.positions_to_take(small_board, 0, 0)
+        assert (1, 1) in king_piece.positions_to_take(small_board, 0, 0)
+        assert (0, 1) in king_piece.positions_to_take(small_board, 0, 0)
+        assert (0, 2) not in king_piece.positions_to_take(small_board, 0, 0)
+
     def test_pieces_of_the_same_type_are_indistingueable(self):
         king = King()
         king_2 = King()
@@ -210,6 +226,25 @@ class TestRook:
         rook_piece = Rook()
         small_board = Board(3, 3)
         small_board.put(rook_piece, 0, 0)
+        assert rook_piece.occupy_function(small_board, 0, 0, 0, 0)
+        assert rook_piece.occupy_function(small_board, 0, 0, 0, 1)
+        assert rook_piece.occupy_function(small_board, 0, 0, 0, 2)
+        assert rook_piece.occupy_function(small_board, 0, 0, 1, 0)
+        assert rook_piece.occupy_function(small_board, 0, 0, 2, 0)
+
+    def test_rook_cant_move_can_move_in_diagonal_direction(self):
+        rook_piece = Rook()
+        small_board = Board(3, 3)
+        small_board.put(rook_piece, 1, 2)
+        assert rook_piece.occupy_function(small_board, 0, 0, 1, 1) is False
+        assert rook_piece.occupy_function(small_board, 0, 0, 2, 2) is False
+        # just in case
+        assert rook_piece.occupy_function(small_board, 0, 0, 1, 2) is False
+
+    def test_rook_valid_moves(self):
+        rook_piece = Rook()
+        small_board = Board(3, 3)
+        small_board.put(rook_piece, 0, 0)
         assert rook_piece.takes(small_board, 0, 0, 0, 0)
         assert rook_piece.takes(small_board, 0, 0, 0, 1)
         assert rook_piece.takes(small_board, 0, 0, 0, 2)
@@ -230,6 +265,23 @@ class TestRook:
         assert piece.piece_identification == 'R'
 
 class TestKnight:
+
+    def test_taken_position_generator(self):
+        knight = Knight()
+        small_board = Board(5, 5)
+        small_board.put(knight, 2, 2)
+        valid_positions = [
+            (0, 1),
+            (1, 0),
+            (0, 3),
+            (2, 2),
+            (1, 4),
+            (3, 0),
+            (4, 1),
+            (3, 4),
+            (4, 3),
+        ]
+        assert set(list(knight.positions_to_take(small_board, 2, 2))) == set(valid_positions)
 
     def test_takess(self):
         knight = Knight()
@@ -253,6 +305,26 @@ class TestKnight:
         assert piece.piece_identification == 'N'
 
 class TestBishop:
+
+    def test_model_positions_to_take(self):
+        board = Board(7, 7)
+        bishop = Bishop()
+        board.put(bishop, 2, 4)
+        expected = [
+            (6, 0),
+            (5, 1),
+            (4, 2),
+            (3, 3),
+            (2, 4),
+            (1, 5),
+            (0, 6),
+            (0, 2),
+            (1, 3),
+            (3, 5),
+            (4, 6),
+        ]
+        res = bishop.positions_to_take(board, 2, 4)
+        assert set([pos for pos in res]) == set(expected)
 
     def test_takess_diagonal(self):
         bishop = Bishop()
@@ -289,3 +361,16 @@ class TestQueen:
             (2, 0),
         ]
         verify_piece_movement(queen, small_board, valid_positions, 0, 0)
+
+
+    def test_model_positions_to_take(self):
+        board = Board(3, 3)
+        queen = Queen()
+        board.put(queen, 1, 1)
+        expected = [
+            (0, 0), (0, 1), (0, 2),
+            (1, 0), (1, 1), (1, 2),
+            (2, 0), (2, 1), (2, 2),
+        ]
+        res = queen.positions_to_take(board, 1, 1)
+        assert set([pos for pos in res]) == set(expected)

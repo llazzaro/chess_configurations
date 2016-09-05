@@ -264,17 +264,16 @@ class Bishop(Piece):
     """
 
     def positions_to_take(self, board, i, j):
-        for combination in range(0, max(board.n, board.m)):
-            yield (i + combination + 1, j + combination + 1)
-            yield (i + combination - 1, j + combination + 1)
-            yield (i + combination - 1, j + combination - 1)
-            yield (i + combination + 1, j + combination - 1)
+        for current_i in range(0, board.n):
+            for current_j in range(0, board.m):
+                if self.takes(board, current_i, current_j, i, j):
+                    yield (current_i, current_j)
 
     @property
     def takes(self):
         def move_vertically_or_horizontally(board, piece_position_i, piece_position_j, move_to_i, move_to_j):
             """
-                Rooks can move vertically or horizontally only
+                Bishop can move only in diagonal
             """
             return abs(piece_position_i - move_to_i) == abs(piece_position_j - move_to_j)
 
@@ -298,8 +297,8 @@ class Queen(Rook, Bishop):
     @property
     def takes(self):
         def move_like_a_queen(board, piece_position_i, poiece_position_j, move_to_i, move_to_j):
-            valid_movement_like_bishop = Bishop().occupy_function(board, piece_position_i, poiece_position_j, move_to_i, move_to_j)
-            valid_movement_like_rook = Rook().occupy_function(board, piece_position_i, poiece_position_j, move_to_i, move_to_j)
+            valid_movement_like_bishop = Bishop().takes(board, piece_position_i, poiece_position_j, move_to_i, move_to_j)
+            valid_movement_like_rook = Rook().takes(board, piece_position_i, poiece_position_j, move_to_i, move_to_j)
             return valid_movement_like_bishop or valid_movement_like_rook
 
         return move_like_a_queen

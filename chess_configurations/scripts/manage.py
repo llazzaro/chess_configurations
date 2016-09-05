@@ -45,7 +45,5 @@ def main():
             print(draw_board(board))
 
 
-
-
 if __name__ == '__main__':
     main()
