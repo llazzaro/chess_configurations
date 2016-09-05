@@ -2,14 +2,10 @@
 import os
 import sys
 import time
-from multiprocessing import cpu_count
 
 from collections import defaultdict
 
-from chess_configurations import MultiProcessSolver
 from chess_configurations.draw import draw_board
-
-NUMBER_OF_CPUS = cpu_count()
 
 
 def backtracking(board, original_pieces, pieces, i, j, result, animation=None):

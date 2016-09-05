@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 import time
 import argparse
+from multiprocessing import cpu_count
 
 from chess_configurations.draw import draw_board
 from chess_configurations.models import (
@@ -13,6 +14,7 @@ from chess_configurations.models import (
     Board
 )
 from chess_configurations.solver import backtracking
+NUMBER_OF_CPUS = cpu_count()
 
 
 def parse_args():
