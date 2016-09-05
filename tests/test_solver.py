@@ -6,9 +6,10 @@ from chess_configurations.solver import backtracking
 from chess_configurations.models import Board, King, Rook, Knight
 
 
-def test_very_simple_1x1_board_with_one_piece():
+def test_very_simple():
     """
         A board with one position available.
+        test_very_simple_1x1_board_with_one_piece
     """
     expected = [{'pieces': {'(0, 0)': 'K'}, 'n': 1, 'm': 1}]
     board = Board(1, 1)
@@ -52,6 +53,7 @@ def test_example_test_case_given():
 
 
 def test_example_2_test_case_given():
+    """ This case was given as an example in the problem """
     expected = [
         {'pieces':
          {'(3, 3)': 'N',
