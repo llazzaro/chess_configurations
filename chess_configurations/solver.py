@@ -15,7 +15,7 @@ def backtracking(board, original_pieces, pieces, i, j, result, animation=None):
     for current_i, current_j in board.free_positions():
         if not pieces:
             break
-        for piece in pieces:
+        for piece in set(pieces):
             positions_to_take = piece.positions_to_take(board, current_i, current_j)
             takes_other_piece = any([position in board.piece_positions() for position in positions_to_take])
             none_takes_new_piece = True
@@ -24,8 +24,6 @@ def backtracking(board, original_pieces, pieces, i, j, result, animation=None):
                     none_takes_new_piece = False
                     break
             if not takes_other_piece and none_takes_new_piece:
-                if current_i > board.n or current_j > board.m:
-                    import ipdb;ipdb.set_trace()
                 board.put(piece, current_i, current_j)
                 next_pieces = pieces.copy()
                 next_pieces.remove(piece)
