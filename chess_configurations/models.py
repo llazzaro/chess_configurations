@@ -12,11 +12,18 @@ class Board:
         self._reset_free_places()
 
     def _reset_free_places(self):
+        """
+            Set all possible positions (i, j) as free.
+            A free place means that a piece can be put it
+        """
         for i in range(0, self.n):
             for j in range(0, self.m):
                 self.free_places.append((i, j))
 
     def __eq__(self, other):
+        """
+            Equal function used to compare it against other objects
+        """
         equal_dimension = self.n == other.n and self.m == other.m
         equal_pieces = True
         for position, piece in self.pieces.items():
@@ -30,6 +37,9 @@ class Board:
         return equal_dimension and equal_pieces
 
     def __hash__(self):
+        """
+            Since __eq__ was implemented it was required to add the __hash__
+        """
         dimension = '{0}{1}'.format(self.n, self.m)
         positions = ''.join(sorted(map(lambda position: str(position), self.pieces.keys())))
         pieces = ''.join(sorted(map(lambda piece: piece.piece_identification, self.pieces.values())))
@@ -38,6 +48,9 @@ class Board:
 
     @classmethod
     def from_json(self, data):
+        """
+            Use this class method to load board from json
+        """
         mapping = {'K': King, 'Q': Queen, 'R': Rook, 'B': Bishop, 'N': Knight}
         raw_dict = json.loads(data)
         res = Board(raw_dict['n'], raw_dict['m'])
@@ -48,6 +61,9 @@ class Board:
         return res
 
     def to_json(self):
+        """
+            Dumps the board to a json
+        """
         pieces_dict = {}
         for position, piece in self.pieces.items():
             pieces_dict[str(position)] = piece.piece_identification
@@ -111,7 +127,11 @@ class Board:
         """
         return self.free_places
 
+
 class Piece:
+    """
+        Abstract class for Pieces that represents the common behaviour
+    """
 
     def positions_to_take(self, board, i, j):
         """
@@ -165,6 +185,7 @@ class Piece:
 
 
 class King(Piece):
+    """ Piece that represents the King """
 
     def positions_to_take(self, board, i, j):
         """ See Piece class for more information """
@@ -177,6 +198,7 @@ class King(Piece):
 
     @property
     def takes(self):
+        """ See Piece class for more information """
         def move_anywhere_by_one_place(board, piece_position_i, piece_position_j, move_to_i, move_to_j):
             """
                 King can move anywhere by only one step.
@@ -187,13 +209,15 @@ class King(Piece):
 
     @property
     def piece_identification(self):
-        """ See Piece class method doc string"""
+        """ See Piece class for more information """
         return 'K'
 
 
 class Rook(Piece):
+    """ Piece that represents the Rook """
 
     def positions_to_take(self, board, i, j):
+        """ See Piece class for more information """
         for take_i in range(0, board.n):
             yield (take_i, j)
 
@@ -202,6 +226,7 @@ class Rook(Piece):
 
     @property
     def takes(self):
+        """ See Piece class for more information """
         def move_vertically_or_horizontally(board, piece_position_i, piece_position_j, move_to_i, move_to_j):
             """
                 Rooks can move vertically or horizontally only
@@ -214,12 +239,15 @@ class Rook(Piece):
 
     @property
     def piece_identification(self):
+        """ See Piece class for more information """
         return 'R'
 
 
 class Knight(Piece):
+    """ Piece that represetns a Knight """
 
     def positions_to_take(self, board, i, j):
+        """ See Piece class for more information """
         position_1 = (i - 2, j - 1)
         position_2 = (i - 1, j - 2)
         position_3 = (i + 1, j - 2)
@@ -242,6 +270,7 @@ class Knight(Piece):
 
     @property
     def takes(self):
+        """ See Piece class for more information """
         def move_with_as_knight(board, piece_position_i, piece_position_j, move_to_i, move_to_j):
             """
             """
@@ -254,16 +283,17 @@ class Knight(Piece):
 
     @property
     def piece_identification(self):
+        """ See Piece class for more information """
         return 'N'
 
 
 class Bishop(Piece):
     """
-        Since queens it beheaves like a Rook and a Bishop it inherits from both.
-        the multiple inheritance was not done for code reusage.
+        Piece that represents a Bishop
     """
 
     def positions_to_take(self, board, i, j):
+        """ See Piece class for more information """
         for current_i in range(0, board.n):
             for current_j in range(0, board.m):
                 if self.takes(board, current_i, current_j, i, j):
@@ -271,6 +301,7 @@ class Bishop(Piece):
 
     @property
     def takes(self):
+        """ See Piece class for more information """
         def move_vertically_or_horizontally(board, piece_position_i, piece_position_j, move_to_i, move_to_j):
             """
                 Bishop can move only in diagonal
@@ -281,6 +312,7 @@ class Bishop(Piece):
 
     @property
     def piece_identification(self):
+        """ See Piece class for more information """
         return 'B'
 
 
@@ -291,11 +323,13 @@ class Queen(Rook, Bishop):
     """
 
     def positions_to_take(self, board, i, j):
+        """ See Piece class for more information """
         yield from Bishop.positions_to_take(self, board, i, j)
         yield from Rook.positions_to_take(self, board, i, j)
 
     @property
     def takes(self):
+        """ See Piece class for more information """
         def move_like_a_queen(board, piece_position_i, poiece_position_j, move_to_i, move_to_j):
             valid_movement_like_bishop = Bishop().takes(board, piece_position_i, poiece_position_j, move_to_i, move_to_j)
             valid_movement_like_rook = Rook().takes(board, piece_position_i, poiece_position_j, move_to_i, move_to_j)
@@ -305,4 +339,5 @@ class Queen(Rook, Bishop):
 
     @property
     def piece_identification(self):
+        """ See Piece class for more information """
         return 'Q'

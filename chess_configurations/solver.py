@@ -2,10 +2,14 @@
 import os
 import sys
 import time
+from multiprocessing import cpu_count
 
 from collections import defaultdict
 
+from chess_configurations import MultiProcessSolver
 from chess_configurations.draw import draw_board
+
+NUMBER_OF_CPUS = cpu_count()
 
 
 def backtracking(board, original_pieces, pieces, i, j, result, animation=None):
@@ -13,8 +17,6 @@ def backtracking(board, original_pieces, pieces, i, j, result, animation=None):
         I'm doing the recursion on the pieces parameter.
     """
     for current_i, current_j in board.free_positions():
-        if not pieces:
-            break
         for piece in set(pieces):
             positions_to_take = piece.positions_to_take(board, current_i, current_j)
             takes_other_piece = any([position in board.piece_positions() for position in positions_to_take])
