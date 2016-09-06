@@ -17,6 +17,8 @@ chess_configurations
      :target: https://pyup.io/repos/github/llazzaro/chess_configurations/
      :alt: Updates
 
+.. image:: http://g.recordit.co/L8QfU5McUZ.gif
+     :alt: Preview
 
 Finds all unique configurations of a set of normal chess pieces on a chess board
 
@@ -37,8 +39,7 @@ pip install git+https://github.com/llazzaro/chess_configurations.git
 
 After all installation done, a new command will be available to generate chess configurations.
 
-.. image:: http://g.recordit.co/L8QfU5McUZ.gif
-     :alt: Preview
+
 
 
 How to use
