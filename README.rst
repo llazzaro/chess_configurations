@@ -3,6 +3,9 @@ chess_configurations
 ===============================
 Finds all unique configurations of a set of normal chess pieces on a chess board
 
+.. image:: https://travis-ci.org/llazzaro/chess_configurations.svg?branch=master
+    :target: https://travis-ci.org/llazzaro/chess_configurations
+
 .. image:: http://g.recordit.co/L8QfU5McUZ.gif
      :alt: Preview
 
