@@ -5,6 +5,10 @@ Finds all unique configurations of a set of normal chess pieces on a chess board
 
 .. image:: https://travis-ci.org/llazzaro/chess_configurations.svg?branch=master
     :target: https://travis-ci.org/llazzaro/chess_configurations
+    
+.. image:: https://landscape.io/github/llazzaro/chess_configurations/master/landscape.svg?style=flat
+   :target: https://landscape.io/github/llazzaro/chess_configurations/master
+   :alt: Code Health
 
 .. image:: http://g.recordit.co/L8QfU5McUZ.gif
      :alt: Preview
