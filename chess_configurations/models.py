@@ -113,6 +113,7 @@ class Board:
         assert (i, j) in self.pieces
         for new_free_position in self.pieces[(i, j)].positions_to_take(self, i, j):
             self.free_places.append(new_free_position)
+        self.free_places = list(set(self.free_places))
         del self.pieces[(i, j)]
 
     def complete(self, pieces):

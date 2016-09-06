@@ -137,6 +137,21 @@ def test_free_with_king():
     assert (0, 1) not in board.free_positions()
     assert (2, 2) in board.free_positions()
 
+def test_free_with_pieces():
+    """test_free_with_a_king_in_the_board_happy_path """
+    king = King()
+    queen = Queen()
+    board = Board(7, 7)
+    assert len(board.free_positions()) == 49
+    board.put(king, 5, 5)
+    assert len(board.free_positions()) == 40
+    board.clean(5, 5)
+    assert len(board.free_positions()) == 49
+    board.put(queen, 4, 3)
+    assert len(board.free_positions()) == 26
+    board.clean(4, 3)
+    assert len(board.free_positions()) == 49
+
 
 def test_complete_with_empty_board():
     """
@@ -257,7 +272,7 @@ def test_clean_frees_place():
         (2, 1), (2, 2),
         (2, 3)]
     board.clean(2, 2)
-    assert expected_after_clean == board.free_positions()
+    assert set(expected_after_clean) == set(board.free_positions())
 
 
 # TestPiece:
