@@ -41,6 +41,12 @@ workon chess_configuration
 
 manage -m 7 -n 7 --pieces=K,Q,B,R
 
+Pylint 
+--------
+
+Please execute pylint on the "chess_configurations" directory to avoid checking the tests directory:
+
+pylint chess_configurations/**/*.py
 
 Unit test execution
 --------
