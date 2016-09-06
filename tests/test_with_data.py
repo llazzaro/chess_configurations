@@ -4,6 +4,8 @@ import os
 import json
 from glob import iglob
 
+import pytest
+
 from chess_configurations.solver import backtracking
 from chess_configurations.models import (
     Board,
@@ -16,7 +18,7 @@ from chess_configurations.models import (
 
 TEST_DATA_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'data')
 
-
+@pytest.mark.skip(reason='Very slow cases. execute them only when the solver.py changes.')
 def test_saved_cases():
     """
         docstrings should comply to pep257 for every public class and method
