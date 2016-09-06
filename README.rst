@@ -42,7 +42,7 @@ How to use
 
 workon chess_configuration
 
-configurations -m 7 -n 7 --pieces=K,Q,B,R
+manage -m 7 -n 7 --pieces=K,Q,B,R
 
 
 Unit test execution
@@ -57,7 +57,7 @@ With those file I will execute unit test to check if the solution is ok.
 
 To execute the case generator
 
-pythont test/case_generator.py
+python test/case_generator.py
 
 This script will generate random cases and save all the files in the tests/data directory.
 Use with carefull, if the algorithm has a bug all test cases will be invalid!
