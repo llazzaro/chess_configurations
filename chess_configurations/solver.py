@@ -12,6 +12,7 @@ def backtracking(board, original_pieces, pieces, result, animation=None):
     for current_i, current_j in board.free_positions():
         if not pieces:
             break
+        # to avoid duplicates checks on solution a removed the with the set
         for piece in set(pieces):
             positions_to_take = piece.positions_to_take(board, current_i, current_j)
             positions_taken = [position in board.piece_positions() for position in positions_to_take]
