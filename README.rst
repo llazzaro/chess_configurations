@@ -37,6 +37,9 @@ pip install git+https://github.com/llazzaro/chess_configurations.git
 
 After all installation done, a new command will be available to generate chess configurations.
 
+![Example running](http://g.recordit.co/L8QfU5McUZ.gif)
+
+
 How to use
 --------
 
