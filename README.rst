@@ -1,11 +1,11 @@
 ===============================
 chess_configurations
 ===============================
+Finds all unique configurations of a set of normal chess pieces on a chess board
 
 .. image:: http://g.recordit.co/L8QfU5McUZ.gif
      :alt: Preview
 
-Finds all unique configurations of a set of normal chess pieces on a chess board
 
 
 * Free software: MIT license
