@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import json
+from collections import Counter
 
 
 class Board:
@@ -14,7 +15,7 @@ class Board:
         self.n = dimension_n
         self.m = dimension_m
         self.pieces = {}
-        self.free_places = []
+        self.free_places = Counter()
         self._reset_free_places()
 
     def _reset_free_places(self):
@@ -24,7 +25,7 @@ class Board:
         """
         for i in range(0, self.n):
             for j in range(0, self.m):
-                self.free_places.append((i, j))
+                self.free_places[(i, j)] = 0
 
     def __eq__(self, other):
         """
@@ -90,7 +91,9 @@ class Board:
         assert 0 <= j < self.m
         assert (i, j) not in self.pieces
 
-        self.free_places = list(set(self.free_places) - set(piece.positions_to_take(self, i, j)))
+        for position_to_take in piece.positions_to_take(self, i, j):
+            current_usages = self.free_places[position_to_take[0], position_to_take[1]]
+            self.free_places[position_to_take[0], position_to_take[1]] = current_usages + 1
         self.pieces[(i, j)] = piece
 
     def copy(self):
@@ -101,6 +104,7 @@ class Board:
         res = Board(self.n, self.m)
         for position, piece in self.pieces.items():
             res.pieces[position] = piece
+        res.free_places = self.free_places.copy()
         return res
 
     def clean(self, i, j):
@@ -112,8 +116,8 @@ class Board:
         """
         assert (i, j) in self.pieces
         for new_free_position in self.pieces[(i, j)].positions_to_take(self, i, j):
-            self.free_places.append(new_free_position)
-        self.free_places = list(set(self.free_places))
+            current_usages = self.free_places[new_free_position[0], new_free_position[1]]
+            self.free_places[new_free_position[0], new_free_position[1]] = current_usages - 1
         del self.pieces[(i, j)]
 
     def complete(self, pieces):
@@ -135,7 +139,7 @@ class Board:
         """
             Returns a list of the free positions on the board
         """
-        return self.free_places
+        return [key for key, value in self.free_places.items() if value == 0]
 
     def conflict(self, current_i, current_j):
         """

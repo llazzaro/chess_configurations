@@ -9,7 +9,10 @@ def backtracking(board, original_pieces, pieces, result, animation=None):
     """
         I'm doing the recursion on the pieces parameter.
     """
-    for current_i, current_j in board.free_positions():
+    free_positions = board.free_positions()
+    while free_positions:
+        current_pos = free_positions.pop()
+        current_i, current_j = current_pos[0], current_pos[1]
         if not pieces:
             break
         # to avoid duplicates checks on solution a removed the with the set
@@ -18,6 +21,9 @@ def backtracking(board, original_pieces, pieces, result, animation=None):
             positions_taken = [position in board.piece_positions() for position in positions_to_take]
             takes_other_piece = any(positions_taken)
             no_other_piece_takes_new_piece = not board.conflict(current_i, current_j)
+            position_free = (current_i, current_j) in board.free_positions()
+            if not position_free:
+                break
             if not takes_other_piece and no_other_piece_takes_new_piece:
                 board.put(piece, current_i, current_j)
                 next_pieces = pieces.copy()

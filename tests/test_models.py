@@ -152,6 +152,17 @@ def test_free_with_pieces():
     board.clean(4, 3)
     assert len(board.free_positions()) == 49
 
+def test_free_bug():
+    queen = Queen()
+    queen_2 = Queen()
+    board = Board(7, 7)
+    assert len(board.free_positions()) == 49
+    board.put(queen, 4, 3)
+    assert len(board.free_positions()) == 26
+    board.put(queen, 0, 0)
+    assert len(board.free_positions()) == 12
+    board.clean(0, 0)
+    assert len(board.free_positions()) == 26
 
 def test_complete_with_empty_board():
     """
@@ -260,7 +271,7 @@ def test_clean_frees_place():
     rook = Rook()
     board.put(rook, 2, 2)
     expected = [(0, 1), (0, 0), (1, 3), (3, 3), (3, 0), (3, 1), (1, 0), (1, 1), (0, 3)]
-    assert expected == board.free_positions()
+    assert set(expected) == set(board.free_positions())
     expected_after_clean = [
         (0, 1), (0, 0),
         (1, 3), (3, 3),
