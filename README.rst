@@ -2,21 +2,6 @@
 chess_configurations
 ===============================
 
-
-.. image:: https://img.shields.io/pypi/v/chess_configurations.svg
-        :target: https://pypi.python.org/pypi/chess_configurations
-
-.. image:: https://img.shields.io/travis/llazzaro/chess_configurations.svg
-        :target: https://travis-ci.org/llazzaro/chess_configurations
-
-.. image:: https://readthedocs.org/projects/chess-configurations/badge/?version=latest
-        :target: https://chess-configurations.readthedocs.io/en/latest/?badge=latest
-        :alt: Documentation Status
-
-.. image:: https://pyup.io/repos/github/llazzaro/chess_configurations/shield.svg
-     :target: https://pyup.io/repos/github/llazzaro/chess_configurations/
-     :alt: Updates
-
 .. image:: http://g.recordit.co/L8QfU5McUZ.gif
      :alt: Preview
 
